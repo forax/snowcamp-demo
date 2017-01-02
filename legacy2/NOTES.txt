@@ -49,6 +49,7 @@ when switching to jdk9:
        papaya
          module-info
          io.snowcamp.papaya.api
+         io.snowcamp.papaya.doc
          io.snowcamp.papaya.inmemory
          io.snowcamp.papaya.reflect
          io.snowcamp.papaya.spi
@@ -81,6 +82,20 @@ when switching to jdk9:
      target/main/exploded contains the compiled sources
      target/main/artifacts contains the modular jar
      
+  - by default, packages are not visible from outside the module.
+    We need to export them
+    module papaya {
+       requires json;                  
+       requires jdk.unsupported;
+       
+       exports io.snowcamp.papaya.api;
+       exports io.snowcamp.papaya.doc;
+       exports io.snowcamp.papaya.spi;
+     } 
+     
+     io.snowcamp.papaya.inmemory and io.snowcamp.papaya.reflect contains implementations,
+     no need to export them.
+     
   - The tests are not executed, we need a module-info.java in the test folder too,
     The tests depends on junit so the module-info is
      module papaya {
@@ -91,7 +106,6 @@ when switching to jdk9:
      The modular jar target/test/artifact/test-papaya-1.0.jar contains the sources and the tests
      
   - try to run the tests
-  
    ERROR 
      /usr/jdk/jdk-9/bin/java --module-path target/test/artifact:deps
                              -m papaya/io.snowcamp.papaya.test.Run
@@ -139,21 +153,147 @@ when switching to jdk9:
      Time: 0.043
 
      OK (9 tests)
+ 
+    
+ PHASE 2:  split in several modules
+     In term of dependency,
+                                  papaya.spi
+                                      |
+                       ----------------              
+                       |              |
+                       |        papaya.inmemory
+                       |              |
+                       ----------------               
+                       |              |
+                   papaya.api    papaya.reflect             
+                       |              |
+                       ----------------
+                       |
+                   papaya.doc
+                       |
+                    java.base
      
-     
-   ERROR:
-     nobody can use the papaya API, because the API is not exported !!
-   
-   SOLUTION
-     Export io.snowcamp.papaya.api and io.snowcamp.papaya.spi to anyone
-     module papaya {
-       requires json;
-       requires jdk.unsupported;
+     So we can split in 3 modules, 
+     papaya
+         module-info
+         io.snowcamp.papaya.spi 
+         io.snowcamp.papaya.inmemory
+         io.snowcamp.papaya.api
+     papaya.reflect
+         module-info
+         io.snowcamp.papaya.reflect
+     papaya.doc
+         module-info
+         io.snowcamp.papaya.doc
+             
+     1. creates a new directory in src/main/java named papaya.doc        
+     2. move the package io.snowcamp.papaya.doc into papaya.doc
+     3. create a new module-info.java
+       module papaya.doc {
+         requires java.base;   // optional !
   
-       exports io.snowcamp.papaya.api;
-       exports io.snowcamp.papaya.spi;
-     }
+         exports io.snowcamp.papaya.reflect;
+       }
+     4. creates a new directory in src/main/java named papaya.reflect
+     5. move the package io.snowcamp.papaya.reflect into papaya.reflect
+     6. create a new module-info.java
+       module papaya.reflect {
+         requires jdk.unsupported;
+         requires papaya.doc
+  
+         exports io.snowcamp.papaya.reflect;
+       }
+     7. change src/main/java/papaya/module-info.java to be
+       module papaya {
+         requires json;
+         requires papaya.doc;
+         requires papaya.reflect;
+  
+         exports io.snowcamp.papaya.spi;
+         exports io.snowcamp.papaya.api;
+         // io.snowcamp.papaya.inmemory is not exported
+       }
+         
+    - running the test with 
+       /usr/jdk/jdk-9/bin/java --module-path target/test/artifact:deps
+                               -classpath deps/hamcrest-core-1.3.jar
+                               -m papaya/io.snowcamp.papaya.test.Run
+                               
+      ERROR                        
+        Error occurred during initialization of VM
+          java.lang.module.ResolutionException: Module papaya.doc not found, required by papaya
+	        at java.lang.module.Resolver.fail(java.base@9-ea/Resolver.java:841)
+	        at java.lang.module.Resolver.resolve(java.base@9-ea/Resolver.java:154)
+	        at java.lang.module.Resolver.resolveRequires(java.base@9-ea/Resolver.java:116)
+	        at java.lang.module.Configuration.resolveRequiresAndUses(java.base@9-ea/Configuration.java:311)
+	        at java.lang.module.ModuleDescriptor$1.resolveRequiresAndUses(java.base@9-ea/ModuleDescriptor.java:2483)
+	        at jdk.internal.module.ModuleBootstrap.boot(java.base@9-ea/ModuleBootstrap.java:272)
+	        at java.lang.System.initPhase2(java.base@9-ea/System.java:1927)
+       
+       before running, the VM checks that all modules are available, here papaya.doc is not available.
+       
+      SOLUTION
+       target/main/artifact has to be added *after* target/test/artifact
+       
+        /usr/jdk/jdk-9/bin/java --module-path target/test/artifact:target/main/artifact:deps
+                               -classpath deps/hamcrest-core-1.3.jar
+                               -m papaya/io.snowcamp.papaya.test.Run
+       
+       but this create another error                        
+      ERROR
+       1) testInMemoryDBPair(io.snowcamp.papaya.test.DBObjectAPI)
+         java.lang.reflect.InaccessibleObjectException: Unable to make field
+         private java.lang.String io.snowcamp.papaya.test.DBObjectAPI$Pair.first accessible:
+         module papaya does not "opens io.snowcamp.papaya.test" to module papaya.reflect
+	       at java.base/jdk.internal.reflect.Reflection.throwInaccessibleObjectException(Reflection.java:427)
+	       at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:201)
+	       at java.base/java.lang.reflect.Field.checkCanSetAccessible(Field.java:171)
+	       at java.base/java.lang.reflect.Field.setAccessible(Field.java:165)
+           ...
+       
+       Now the tests and io.snowcamp.papaya.reflect.ReflectionSupport are not in the same module anymore and                        
+       the test testInMemoryDBPair ask ReflectionSupport to use reflection on its *private* fields.
+       
+      SOLUTION
+       Here the best is to open the whole test module, so all tests will be able to test the reflection.
+         open module papaya {
+           requires junit;
+           
+           exports io.snowcamp.papaya.test;
+         }
+ 
+    - by default, required modules are not transitive.
+      But you can not use the api, by example the interface DB without using a Document so for the users
+      of the module papaya, papaya.doc should be required transitively.
+        
+      module papaya {
+         requires json;
+         requires transitive papaya.doc;
+         requires papaya.reflect;
+  
+         exports io.snowcamp.papaya.spi;
+         exports io.snowcamp.papaya.api;
+       }
+ 
+      **TODO**: new version of javac should report an error if requires transitive is not used
+      
+    - also we can restrict the package io.snowcamp.papaya.reflect to be used only by some trusted modules,
+      by specifying a clause to after the directive export
+        module papaya.reflect {
+          requires jdk.unsupported;
+          requires papaya.doc;
+  
+          exports io.snowcamp.papaya.reflect to papaya;
+        }
+      so only papaya will be able to use the classes of the package io.snowcamp.papaya.reflect.
+      
+   PHASE 3: here comes the services.
+     If we take a look to the relation between papaya.api and papaya.inmemory, papaya.api is an abstract API
+     and papaya.inmemory is its implementation. In term of implementation, we may want to provide
+     another inmemory implementation so bundling papaya.api and papaya.inmemory together is not a good idea.
      
-     [pro] DONE !          elapsed time 2,058 ms
-    
-    
+     The platform module API provide the notion of service and service provider help to separate the two packages.
+     
+     
+      
+ 

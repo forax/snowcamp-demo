@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import io.snowcamp.papaya.api.DB;
-import io.snowcamp.papaya.api.Document;
+import io.snowcamp.papaya.doc.Document;
 import io.snowcamp.papaya.reflect.ReflectionSupport;
 
 public class InMemoryDB implements DB {

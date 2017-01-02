@@ -1,4 +1,4 @@
-package io.snowcamp.papaya.api;
+package io.snowcamp.papaya.doc;
 
 import java.util.Collections;
 import java.util.List;

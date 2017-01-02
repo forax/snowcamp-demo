@@ -1,4 +1,4 @@
-package io.snowcamp.papaya.api;
+package io.snowcamp.papaya.doc;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

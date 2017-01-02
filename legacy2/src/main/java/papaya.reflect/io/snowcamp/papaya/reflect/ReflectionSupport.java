@@ -13,8 +13,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import io.snowcamp.papaya.api.Document;
-import io.snowcamp.papaya.api.Sequence;
+import io.snowcamp.papaya.doc.Document;
+import io.snowcamp.papaya.doc.Sequence;
 import sun.misc.Unsafe;
 
 public class ReflectionSupport {

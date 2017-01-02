@@ -5,8 +5,8 @@ import org.json.JSONObject;
 
 import io.snowcamp.papaya.api.DB;
 import io.snowcamp.papaya.api.DBFactory;
-import io.snowcamp.papaya.api.Document;
-import io.snowcamp.papaya.api.Sequence;
+import io.snowcamp.papaya.doc.Document;
+import io.snowcamp.papaya.doc.Sequence;
 import io.snowcamp.papaya.reflect.ReflectionSupport;
 
 public class InMemoryDBFactory implements DBFactory {

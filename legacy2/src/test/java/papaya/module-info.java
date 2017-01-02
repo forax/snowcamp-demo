@@ -1,6 +1,4 @@
-module papaya {
-  //requires json;
-  //requires jdk.unsupported;
+open module papaya {
   requires junit;
   
   exports io.snowcamp.papaya.test;

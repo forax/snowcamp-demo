@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import io.snowcamp.papaya.api.DB;
 import io.snowcamp.papaya.api.DBFactory;
-import io.snowcamp.papaya.api.Document;
+import io.snowcamp.papaya.doc.Document;
 import io.snowcamp.papaya.spi.StandardKind;
 
 @SuppressWarnings("static-method")

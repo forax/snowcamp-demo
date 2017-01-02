@@ -11,8 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import io.snowcamp.papaya.api.Document;
-import io.snowcamp.papaya.api.Sequence;
+import io.snowcamp.papaya.doc.Document;
+import io.snowcamp.papaya.doc.Sequence;
 
 public class Utils {
   public static JSONObject parseDocument(String document) {

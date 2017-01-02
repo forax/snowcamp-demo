@@ -2,6 +2,8 @@ package io.snowcamp.papaya.api;
 
 import java.util.stream.Stream;
 
+import io.snowcamp.papaya.doc.Document;
+
 public interface DB extends AutoCloseable {
   String name();
   @Override

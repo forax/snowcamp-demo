@@ -1,5 +1,8 @@
 package io.snowcamp.papaya.api;
 
+import io.snowcamp.papaya.doc.Document;
+import io.snowcamp.papaya.doc.Sequence;
+
 public interface DBFactory {
   DB create(String name);
   
