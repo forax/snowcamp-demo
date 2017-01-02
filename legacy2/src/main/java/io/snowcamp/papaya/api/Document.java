@@ -1,15 +1,12 @@
 package io.snowcamp.papaya.api;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 public interface Document extends Map<String, Object> {
   // a map of key/value pairs, keys are String, values are any JSON values
@@ -29,15 +26,9 @@ public interface Document extends Map<String, Object> {
   }
   
   default void putBlob(String key, byte[] blob) {
-    put(key, new BASE64Encoder().encode(blob));
+    put(key, new String(Base64.getEncoder().encode(blob), StandardCharsets.ISO_8859_1));
   }
   default Optional<byte[]> getBlob(String key) {
-    return get(key, String.class).map(base64 -> {
-      try {
-        return new BASE64Decoder().decodeBuffer(base64);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    });
+    return get(key, String.class).map(base64 -> Base64.getDecoder().decode(base64));
   }
 }
