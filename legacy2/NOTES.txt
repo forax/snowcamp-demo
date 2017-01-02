@@ -292,8 +292,42 @@ when switching to jdk9:
      and papaya.inmemory is its implementation. In term of implementation, we may want to provide
      another inmemory implementation so bundling papaya.api and papaya.inmemory together is not a good idea.
      
-     The platform module API provide the notion of service and service provider help to separate the two packages.
+     The platform module API provides the feature of service/service provider help to separate the two packages.
      
+     1. creates a new directory in src/main/java named papaya.inmemory        
+     2. move the package io.snowcamp.papaya.inmemory into papaya.inmemory
+     3. create a new module-info.java
+       module papaya.inmemory {
+         requires json;
+         requires papaya;
+         requires papaya.doc;
+         requires papaya.reflect;
+  
+         provides io.snowcamp.papaya.api.BDFactory with
+           io.snowcamp.papaya.inmemory.InMemoryDBFactory;
+       }
+     4. modify the module-info of papaya
+       module papaya {
+         requires transitive papaya.doc;
+         
+         exports io.snowcamp.papaya.api;
+         exports io.snowcamp.papaya.spi;
+         
+         uses io.snowcamp.papaya.api.BDFactory;
+       }
+ 
+       and modify io.snowcamp.papaya.spi.StandardKind to use a java.util.ServiceLoader.
+       (comment 'return new InMemoryDBFactory();' and uncomment the next 3 lines)
+       
+       Also do not forget that papaya.reflect now needs to be exported to papaya.inmemory.
+       
+       module papaya.reflect {
+         requires jdk.unsupported;
+         requires papaya.doc;
+  
+         exports io.snowcamp.papaya.reflect to papaya.inmemory;
+       }
      
       
+       
  

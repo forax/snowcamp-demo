@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="legacy1/src/main/java"/>
 	<classpathentry excluding="module-info.java" kind="src" path="legacy2/src/main/java/papaya"/>
 	<classpathentry excluding="module-info.java" kind="src" path="legacy2/src/main/java/papaya.reflect"/>
 	<classpathentry excluding="module-info.java" kind="src" path="legacy2/src/main/java/papaya.doc"/>
+	<classpathentry excluding="module-info.java" kind="src" path="legacy2/src/main/java/papaya.inmemory"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="legacy2/deps/json-20160810.jar"/>

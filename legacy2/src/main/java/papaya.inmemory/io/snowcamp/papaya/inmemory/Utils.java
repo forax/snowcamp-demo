@@ -14,7 +14,7 @@ import org.json.JSONTokener;
 import io.snowcamp.papaya.doc.Document;
 import io.snowcamp.papaya.doc.Sequence;
 
-public class Utils {
+class Utils {
   public static JSONObject parseDocument(String document) {
     return new JSONObject(new JSONTokener(document));
   }
