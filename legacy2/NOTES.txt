@@ -45,7 +45,7 @@ when switching to jdk9:
     }
     
  How to use modules:
-  - one big module, 
+ PHASE1: one big module, 
        papaya
          module-info
          io.snowcamp.papaya.api
@@ -74,18 +74,86 @@ when switching to jdk9:
      dependencies are now explicit, so we need to add requires org.json and jdk.unsupported
      i.e. in the module-info.java
      module papaya {
-      requires org.json;
-      requires jdk.unsupported;
+       requires json;                  // automatic module
+       requires jdk.unsupported;
      }
      
      target/main/exploded contains the compiled sources
      target/main/artifacts contains the modular jar
      
+  - The tests are not executed, we need a module-info.java in the test folder too,
+    The tests depends on junit so the module-info is
+     module papaya {
+       requires junit;
+     }
+     
+     The modular jar target/main/artifact/papaya-1.0.jar contains the sources
+     The modular jar target/test/artifact/test-papaya-1.0.jar contains the sources and the tests
+     
+  - try to run the tests
+  
+   ERROR 
+     /usr/jdk/jdk-9/bin/java --module-path target/test/artifact:deps
+                             -m papaya/io.snowcamp.papaya.test.Run
+       Exception in thread "main" java.lang.NoClassDefFoundError: org/hamcrest/SelfDescribing
+	       at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+           ...
+     
+       automatic modules describe a flat hierarchy, we do not know that junit requires hamcrest-core
+     
+   SOLUTION
+    Automatic module can see the classspath, so  
+    /usr/jdk/jdk-9/bin/java --module-path target/test/artifact:deps
+                            -classpath deps/hamcrest-core-1.3.jar
+                            -m papaya/io.snowcamp.papaya.test.Run
+     
+   ANOTHER ERROR
+     1) testInMemoryDBfindAllAppend(io.snowcamp.papaya.test.DBDocumentAPI)
+        java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner (in module junit) cannot access
+        class io.snowcamp.papaya.test.DBDocumentAPI (in module papaya) because module papaya does not export
+        io.snowcamp.papaya.test to module junit
+
+	  at java.base/jdk.internal.reflect.Reflection.throwIllegalAccessException(Reflection.java:418)
+	  at java.base/jdk.internal.reflect.Reflection.throwIllegalAccessException(Reflection.java:409)
+	  at java.base/jdk.internal.reflect.Reflection.ensureMemberAccess(Reflection.java:111)
+	  at java.base/java.lang.reflect.AccessibleObject.slowCheckMemberAccess(AccessibleObject.java:364)
+	  at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:356)
+	  at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:452)
+      ...
+     
+     Obviously, if the JUnit tests has to be visible from the JUnit test runner,
+     so the test must be declared in an exported package
+     
+   SOLUTION  
+     In the module-info of the test, we need to export io.snowcamp.papaya.test
+     module papaya {
+       requires junit;
+       
+       exports io.snowcamp.papaya.test;
+     }
+     
+     /usr/jdk/jdk-9/bin/java --module-path target/test/artifact:deps
+                             -classpath deps/hamcrest-core-1.3.jar
+                             -m papaya/io.snowcamp.papaya.test.Run
+     .........
+     Time: 0.043
+
+     OK (9 tests)
      
      
-  - The tests are not executed, we need a module-info.java in the test folder to  
-     
-     
-     
-  - io.snowcamp.papaya.inmemory contains the implementation, it should not be 
+   ERROR:
+     nobody can use the papaya API, because the API is not exported !!
    
+   SOLUTION
+     Export io.snowcamp.papaya.api and io.snowcamp.papaya.spi to anyone
+     module papaya {
+       requires json;
+       requires jdk.unsupported;
+  
+       exports io.snowcamp.papaya.api;
+       exports io.snowcamp.papaya.spi;
+     }
+     
+     [pro] DONE !          elapsed time 2,058 ms
+    
+    
