@@ -1,3 +1,69 @@
+using jdeps (report usage of non standard API):
+/usr/jdk/jdk-9/bin/jdeps --jdk-internals target deps/vertx-core-3.3.3.jar deps/vertx-web-3.3.3.jar deps/netty-transport-4.1.5.Final.jar deps/netty-common-4.1.5.Final.jar deps/netty-resolver-4.1.5.Final.jar deps/netty-resolver-dns-4.1.5.Final.jar deps/netty-codec-http-4.1.5.Final.jar deps/netty-codec-4.1.5.Final.jar deps/netty-buffer-4.1.5.Final.jar deps/netty-handler-4.1.5.Final.jar deps/netty-codec-dns-4.1.5.Final.jar deps/netty-codec-http2-4.1.5.Final.jar deps/jackson-databind-2.7.4.jar deps/jackson-core-2.7.4.jar deps/jackson-annotations-2.7.0.jar
+netty-common-4.1.5.Final.jar -> jdk.unsupported
+   io.netty.util.internal.PlatformDependent$Mpsc$1    -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.PlatformDependent0          -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.PlatformDependent0$2        -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.PlatformDependent0$3        -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.UnsafeAtomicIntegerFieldUpdater -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.UnsafeAtomicLongFieldUpdater -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.UnsafeAtomicReferenceFieldUpdater -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ConcurrentHashMapV8   -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ConcurrentHashMapV8$1 -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ConcurrentHashMapV8$TreeBin -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.CountedCompleter      -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.CountedCompleter$1    -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ForkJoinPool          -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ForkJoinPool$2        -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ForkJoinPool$WorkQueue -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ForkJoinTask          -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.ForkJoinTask$1        -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.Striped64             -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.Striped64$1           -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.chmv8.Striped64$Cell        -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.BaseLinkedQueueConsumerNodeRef -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.BaseLinkedQueueProducerNodeRef -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.ConcurrentSequencedCircularArrayQueue -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.LinkedQueueNode -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.MpmcArrayQueueConsumerField -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.MpmcArrayQueueProducerField -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueConsumerField -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueHeadLimitField -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueueTailField -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.queues.MpscChunkedArrayQueue -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.util.JvmInfo -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.util.UnsafeAccess -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+   io.netty.util.internal.shaded.org.jctools.util.UnsafeRefArrayAccess -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+netty-handler-4.1.5.Final.jar -> java.base
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.util.ObjectIdentifier                 JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.AlgorithmId                      JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateAlgorithmId           JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateIssuerName            JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateSerialNumber          JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateSubjectName           JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateValidity              JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateVersion               JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.CertificateX509Key               JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.X500Name                         JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.X509CertImpl                     JDK internal API (java.base)
+   io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator -> sun.security.x509.X509CertInfo                     JDK internal API (java.base)
+
+Warning: JDK internal APIs are unsupported and private to JDK implementation that are
+subject to be removed or changed incompatibly and could break your application.
+Please modify your code to eliminate dependence on any JDK internal APIs.
+For the most recent update on JDK internal API replacements, please check:
+https://wiki.openjdk.java.net/display/JDK8/Java+Dependency+Analysis+Tool
+
+JDK Internal API                         Suggested Replacement
+----------------                         ---------------------
+sun.misc.Unsafe                          See http://openjdk.java.net/jeps/260
+sun.security.x509.X500Name               Use javax.security.auth.x500.X500Principal @since 1.4
+
+DIAGNOSTIC:
+  Use Unsafe, maybe ok
+  Use sun.security.x509.X500Name :(  -> not great for HTTPS
+  
+
 when switching to jdk9:
   ERROR 1:
     Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
