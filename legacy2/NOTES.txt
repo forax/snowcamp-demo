@@ -1,3 +1,24 @@
+using jdeps (report usage of non standard API):
+/usr/jdk/jdk-9/bin/jdeps --jdk-internals target/
+target -> JDK removed internal API
+target -> jdk.unsupported
+   fr.umlv.papaya.api.Document                        -> sun.misc.BASE64Decoder                             JDK internal API (JDK removed internal API)
+   fr.umlv.papaya.api.Document                        -> sun.misc.BASE64Encoder                             JDK internal API (JDK removed internal API)
+   io.snowcamp.papaya.reflect.ReflectionSupport       -> sun.misc.Unsafe                                    JDK internal API (jdk.unsupported)
+
+Warning: JDK internal APIs are unsupported and private to JDK implementation that are
+subject to be removed or changed incompatibly and could break your application.
+Please modify your code to eliminate dependence on any JDK internal APIs.
+For the most recent update on JDK internal API replacements, please check:
+https://wiki.openjdk.java.net/display/JDK8/Java+Dependency+Analysis+Tool
+
+JDK Internal API                         Suggested Replacement
+----------------                         ---------------------
+sun.misc.BASE64Decoder                   Use java.util.Base64 @since 1.8
+sun.misc.BASE64Encoder                   Use java.util.Base64 @since 1.8
+sun.misc.Unsafe                          See http://openjdk.java.net/jeps/260
+
+
 when switching to jdk9:
   ERROR 1:
     src/main/java/io/snowcamp/papaya/api/Document.java:11: error: cannot find symbol
@@ -15,7 +36,56 @@ when switching to jdk9:
   SOLUTION:
     Replace usages of sun.misc.BASE64Decoder by java.util.Base64.Decoder and
     sun.misc.BASE64Encoder by java.util.Base64.Encoder
+    
+    default void putBlob(String key, byte[] blob) {
+      put(key, new String(Base64.getEncoder().encode(blob), StandardCharsets.ISO_8859_1));
+    }
+    default Optional<byte[]> getBlob(String key) {
+      return get(key, String.class).map(base64 -> Base64.getDecoder().decode(base64));
+    }
+    
+ How to use modules:
+  - one big module, 
+       papaya
+         module-info
+         io.snowcamp.papaya.api
+         io.snowcamp.papaya.inmemory
+         io.snowcamp.papaya.reflect
+         io.snowcamp.papaya.spi
 
+       1) create a folder 'papaya' at src/main/java and move 'io' in it
+       2) add a module-info.java inside papaya
+          module papaya {
+          }
+       3) do the same things with the test
+       4) use pro as build tool and pro.json as build script
+          $ pro
+    
+   ERROR:
+     [pro] registered plugins compiler, convention, linker, modulefixer, packager, resolver, runner, uberpackager
+     src/main/java/papaya/io/snowcamp/papaya/inmemory/InMemoryDBFactory.java:3: error: package org.json does not exist
+       import org.json.JSONArray;
+     ...
+     src/main/java/papaya/io/snowcamp/papaya/reflect/ReflectionSupport.java:18: error: package sun.misc does not exist
+       import sun.misc.Unsafe;
+     ...
      
-   
+   SOLUTION:
+     dependencies are now explicit, so we need to add requires org.json and jdk.unsupported
+     i.e. in the module-info.java
+     module papaya {
+      requires org.json;
+      requires jdk.unsupported;
+     }
+     
+     target/main/exploded contains the compiled sources
+     target/main/artifacts contains the modular jar
+     
+     
+     
+  - The tests are not executed, we need a module-info.java in the test folder to  
+     
+     
+     
+  - io.snowcamp.papaya.inmemory contains the implementation, it should not be 
    
