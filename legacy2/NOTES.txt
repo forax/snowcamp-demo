@@ -327,7 +327,5 @@ when switching to jdk9:
   
          exports io.snowcamp.papaya.reflect to papaya.inmemory;
        }
-     
-      
        
  
