@@ -4,7 +4,7 @@ export JAVA_HOME=/usr/jdk/jdk1.8.0_65/
 export java=$JAVA_HOME/bin/java
 export javac=$JAVA_HOME/bin/javac
 
-mkdir target
+mkdir -p target
 $javac -classpath deps/vertx-core-3.3.3.jar:deps/vertx-web-3.3.3.jar \
        -d target/ \
        $(find src/main/java/ -name "*.java")
