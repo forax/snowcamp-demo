@@ -3,8 +3,6 @@ package io.snowcamp.papaya.test;
 import org.junit.internal.TextListener;
 import org.junit.runner.JUnitCore;
 
-import junit.framework.TestSuite;
-
 public class Run {
   public static void main(String[] args) {
     JUnitCore junit = new JUnitCore();
