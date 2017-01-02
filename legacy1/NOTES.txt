@@ -1,0 +1,38 @@
+when switching to jdk9:
+  ERROR 1:
+    Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
+	  at io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:101)
+	  
+    In the static initializer of PlatformDependent0, 
+      https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68
+    the exception is raised because the code tries to access a field of java.nui.Buffer which is not in an open package.
+  
+  SOLUTION:
+    java --add-opens java.base/java.nio=ALL-UNNAMED
+    
+  ERROR 2:
+   Exception in thread "main" java.lang.IllegalStateException: failed to create a child event loop
+	 at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:88)
+	 ...
+   Caused by: java.lang.reflect.InaccessibleObjectException:
+     Unable to make field protected java.util.Set sun.nio.ch.SelectorImpl.selectedKeys accessible:
+     module java.base does not "opens sun.nio.ch" to unnamed module @6c3f5566
+   
+   SOLUTION:
+     java --add-opens java.base/sun.nio.ch=ALL-UNNAMED
+     
+   
+   ERROR 3:
+     Jan 02, 2017 3:52:29 PM io.netty.resolver.dns.DnsServerAddresses <clinit>
+     WARNING: Default DNS servers: [/8.8.8.8:53, /8.8.4.4:53] (Google Public DNS as a fallback)
+     
+     In the static initializer of io.netty.resolver.dns.DnsServerAddresses,
+     it tries to load the class sun.net.dns.ResolverConfiguration which is in a non-exported package
+       https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49
+       
+   SOLUTION:
+     java --add-exports java.base/sun.net.dns=ALL-UNNAMED
+
+     
+   
+   

@@ -1,0 +1,21 @@
+when switching to jdk9:
+  ERROR 1:
+    src/main/java/io/snowcamp/papaya/api/Document.java:11: error: cannot find symbol
+      import sun.misc.BASE64Decoder;
+                      ^
+      symbol:   class BASE64Decoder
+      location: package sun.misc
+
+    sun.misc.BASE64Decoder does not exist anymore, it has been superseded by java.util.Base64 
+    see https://docs.oracle.com/javase/8/docs/api/java/util/Base64.html
+  
+    Note: running the program compiled for the JDK8 with the JDK9 do not work too,
+       the class sun.misc.BASE64Decoder do not exist anymore !!
+  
+  SOLUTION:
+    Replace usages of sun.misc.BASE64Decoder by java.util.Base64.Decoder and
+    sun.misc.BASE64Encoder by java.util.Base64.Encoder
+
+     
+   
+   
