@@ -107,7 +107,7 @@ public class Utils {
     
     @Override
     public Object set(int index, Object object) {
-      Object value = get(index);
+      Object value = wrap(get(index));
       array.put(index, unwrap(object));
       return value;
     }
@@ -136,6 +136,9 @@ public class Utils {
     if (object instanceof SequenceImpl) {
       return ((SequenceImpl)object).array;
     }
-    return object;
+    if (object == null || object instanceof String || object instanceof Number) {
+      return object;
+    }
+    throw new UnsupportedOperationException("invalid JSON type " + object);
   }
 }
