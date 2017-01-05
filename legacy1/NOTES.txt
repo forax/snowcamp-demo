@@ -80,7 +80,21 @@ when switching to jdk9 (run only):
     Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
 	  at io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:101)
 	  
-    In the static initializer of PlatformDependent0, 
+	The real error is not visible :(
+	
+	Hopefully, there is a flag to ask to print every module access violations
+	-Dsun.reflect.debugModuleAccessChecks=true
+
+	java.lang.reflect.InaccessibleObjectException: Unable to make field long java.nio.Buffer.address accessible: module java.base does not "opens java.nio" to unnamed module @5606c0b
+	  at java.base/jdk.internal.reflect.Reflection.throwInaccessibleObjectException(Reflection.java:427)
+	  at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:201)
+	  at java.base/java.lang.reflect.Field.checkCanSetAccessible(Field.java:171)
+	  at java.base/java.lang.reflect.Field.setAccessible(Field.java:165)
+	  at io.netty.util.internal.PlatformDependent0$1.run(PlatformDependent0.java:69)
+      ...
+	
+	Thats's a better error message !
+	In the static initializer of PlatformDependent0, 
       https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68
     the exception is raised because the code tries to access a field of java.nui.Buffer which is not in an open package.
   
