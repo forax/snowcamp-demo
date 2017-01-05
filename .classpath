@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="legacy2/src/main/java"/>
 	<classpathentry kind="src" path="legacy2/src/test/java"/>
+	<classpathentry kind="src" path="legacy1/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="legacy2/deps/json-20160810.jar"/>

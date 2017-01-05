@@ -3,8 +3,8 @@ package io.snowcamp.vertx;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
@@ -32,7 +32,7 @@ import javax.xml.bind.Unmarshaller;
 public class ExampleApp extends AbstractVerticle {
   @Override
   public void start() {
-    Configuration configuration = loadConfiguration();
+    Configuration configuration = loadConfiguration("configuration.xml");
 
     Router router = Router.router(vertx);
     
@@ -43,22 +43,23 @@ public class ExampleApp extends AbstractVerticle {
     // otherwise serve static pages
     router.route().handler(StaticHandler.create());
 
-    vertx.createHttpServer().requestHandler(router::accept).listen(configuration.getPort());
-    System.out.println("listen on port " + configuration.getPort());
+    int port = configuration.getPort();
+    vertx.createHttpServer().requestHandler(router::accept).listen(port);
+    System.out.println("listen on port " + port);
   }
 
-  private Configuration loadConfiguration() {
-    Configuration configuration;
+  private Configuration loadConfiguration(String configurationFileName) {
     try {
       JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
       Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-      InputStream inputStream = this.getClass().getResourceAsStream("configuration.xml");
-      configuration = (Configuration) unmarshaller.unmarshal(inputStream);
-    } catch (JAXBException e) {
-      System.out.println("Arggh, cannot read configuration file");
-      configuration = new Configuration();
-      configuration.setPort(8080);
+      try(InputStream inputStream = this.getClass().getResourceAsStream(configurationFileName)) {
+        return (Configuration) unmarshaller.unmarshal(inputStream);
+      }
+    } catch (JAXBException | IOException e) {
+      System.err.println("Arggh, cannot read the configuration file: " + e.getMessage());
     }
+    Configuration configuration = new Configuration();
+    configuration.setPort(8080);
     return configuration;
   }
 

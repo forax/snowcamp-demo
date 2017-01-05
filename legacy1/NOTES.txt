@@ -65,17 +65,18 @@ DIAGNOSTIC:
   
 
 when switching to jdk9 (run only):
-  ERROR 0:
+  ERROR 1:
     Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException
 
-    When loading the XML configuration, we are using JAX-B which is not in the default module.
+    When loading the XML configuration, we are using JAX-B which is not among the default root modules.
 
   SOLUTION:
     Add explicitly JAX-B on runtime
 
     java --add-modules java.xml.bind
 
-  ERROR 1:
+
+  ERROR 2:
     Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
 	  at io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:101)
 	  
@@ -86,7 +87,8 @@ when switching to jdk9 (run only):
   SOLUTION:
     java --add-opens java.base/java.nio=ALL-UNNAMED
     
-  ERROR 2:
+    
+  ERROR 3:
    Exception in thread "main" java.lang.IllegalStateException: failed to create a child event loop
 	 at io.netty.util.concurrent.MultithreadEventExecutorGroup.<init>(MultithreadEventExecutorGroup.java:88)
 	 ...
@@ -98,7 +100,7 @@ when switching to jdk9 (run only):
      java --add-opens java.base/sun.nio.ch=ALL-UNNAMED
      
    
-   ERROR 3:
+   ERROR 4:
      Jan 02, 2017 3:52:29 PM io.netty.resolver.dns.DnsServerAddresses <clinit>
      WARNING: Default DNS servers: [/8.8.8.8:53, /8.8.4.4:53] (Google Public DNS as a fallback)
      
