@@ -1,12 +1,4 @@
-package io.snowcamp.vertx;
-
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.stream.Stream;
+package io.snowcamp.papaya.web;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -20,6 +12,13 @@ import io.vertx.ext.web.handler.StaticHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 // java
 // --add-exports java.base/sun.nio.ch=ALL-UNNAMED

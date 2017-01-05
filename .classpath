@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="legacy2/src/main/java"/>
-	<classpathentry kind="src" path="legacy2/src/test/java"/>
-	<classpathentry kind="src" path="legacy1/src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="legacy2/deps/json-20160810.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/vertx-core-3.3.3.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/vertx-web-3.3.3.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-transport-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-common-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-resolver-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-resolver-dns-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-codec-http-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-codec-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-buffer-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-handler-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-codec-dns-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/netty-codec-http2-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/jackson-databind-2.7.4.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/jackson-core-2.7.4.jar"/>
-	<classpathentry kind="lib" path="legacy1/deps/jackson-annotations-2.7.0.jar"/>
+	<classpathentry kind="lib" path="deps/json-20160810.jar"/>
+	<classpathentry kind="lib" path="deps/vertx-core-3.3.3.jar"/>
+	<classpathentry kind="lib" path="deps/vertx-web-3.3.3.jar"/>
+	<classpathentry kind="lib" path="deps/netty-transport-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-common-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-resolver-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-resolver-dns-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-codec-http-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-codec-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-buffer-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-handler-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-codec-dns-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/netty-codec-http2-4.1.5.Final.jar"/>
+	<classpathentry kind="lib" path="deps/jackson-databind-2.7.4.jar"/>
+	<classpathentry kind="lib" path="deps/jackson-core-2.7.4.jar"/>
+	<classpathentry kind="lib" path="deps/jackson-annotations-2.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
