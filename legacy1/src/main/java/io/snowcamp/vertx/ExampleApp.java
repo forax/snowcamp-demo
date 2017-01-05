@@ -3,10 +3,10 @@ package io.snowcamp.vertx;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -16,6 +16,10 @@ import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 // java
 // --add-exports java.base/sun.nio.ch=ALL-UNNAMED
@@ -28,6 +32,8 @@ import io.vertx.ext.web.handler.StaticHandler;
 public class ExampleApp extends AbstractVerticle {
   @Override
   public void start() {
+    Configuration configuration = loadConfiguration();
+
     Router router = Router.router(vertx);
     
     // route to JSON REST APIs 
@@ -37,14 +43,29 @@ public class ExampleApp extends AbstractVerticle {
     // otherwise serve static pages
     router.route().handler(StaticHandler.create());
 
-    vertx.createHttpServer().requestHandler(router::accept).listen(8080);
-    System.out.println("listen on port 8080");
+    vertx.createHttpServer().requestHandler(router::accept).listen(configuration.getPort());
+    System.out.println("listen on port " + configuration.getPort());
   }
-  
+
+  private Configuration loadConfiguration() {
+    Configuration configuration;
+    try {
+      JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
+      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+      InputStream inputStream = this.getClass().getResourceAsStream("configuration.xml");
+      configuration = (Configuration) unmarshaller.unmarshal(inputStream);
+    } catch (JAXBException e) {
+      System.out.println("Arggh, cannot read configuration file");
+      configuration = new Configuration();
+      configuration.setPort(8080);
+    }
+    return configuration;
+  }
+
   private void getAllDBs(RoutingContext routingContext) {
     routingContext.response()
        .putHeader("content-type", "application/json")
-       .end(Arrays.asList("bd1", "bd2").stream().map(Json::encodePrettily).collect(joining(", ", "[", "]")));
+       .end(Stream.of("bd1", "bd2").map(Json::encodePrettily).collect(joining(", ", "[", "]")));
   }
   
   private void getARecord(RoutingContext routingContext) {

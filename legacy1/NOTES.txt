@@ -64,7 +64,17 @@ DIAGNOSTIC:
   Use sun.security.x509.X500Name :(  -> not great for HTTPS
   
 
-when switching to jdk9:
+when switching to jdk9 (run only):
+  ERROR 0:
+    Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException
+
+    When loading the XML configuration, we are using JAX-B which is not in the default module.
+
+  SOLUTION:
+    Add explicitly JAX-B on runtime
+
+    java --add-modules java.xml.bind
+
   ERROR 1:
     Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
 	  at io.netty.util.internal.PlatformDependent.<clinit>(PlatformDependent.java:101)
