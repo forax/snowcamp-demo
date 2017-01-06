@@ -4,7 +4,8 @@ export JAVA9_HOME=/usr/jdk/jdk-9
 export java=$JAVA9_HOME/bin/java
 export javac=$JAVA8_HOME/bin/javac
 
-mkdir -p target
+mkdir -p target && rm -rf target/*
+cp -r src/main/resources/* target/
 $javac -classpath deps/vertx-core-3.3.3.jar:deps/vertx-web-3.3.3.jar \
        -d target/ \
        $(find src/main/java/ -name "*.java")
