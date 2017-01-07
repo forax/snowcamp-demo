@@ -7,18 +7,6 @@
 	<classpathentry kind="lib" path="deps/json-20160810.jar"/>
 	<classpathentry kind="lib" path="deps/vertx-core-3.3.3.jar"/>
 	<classpathentry kind="lib" path="deps/vertx-web-3.3.3.jar"/>
-	<classpathentry kind="lib" path="deps/netty-transport-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-common-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-resolver-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-resolver-dns-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-codec-http-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-codec-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-buffer-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-handler-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-codec-dns-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/netty-codec-http2-4.1.5.Final.jar"/>
-	<classpathentry kind="lib" path="deps/jackson-databind-2.7.4.jar"/>
-	<classpathentry kind="lib" path="deps/jackson-core-2.7.4.jar"/>
-	<classpathentry kind="lib" path="deps/jackson-annotations-2.7.0.jar"/>
+	<classpathentry kind="lib" path="deps/vertx-internal-3.3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
