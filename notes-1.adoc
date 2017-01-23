@@ -1,0 +1,142 @@
+= Running a Java 8 application with JDK 9
+
+== using jdeps
+
+*jdeps* will report usage of non standard API.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/jdeps --jdk-internals target deps/vertx-*.jar
+----
+
+*Diagnostic*
+
+[source]
+----
+JDK Internal API               Suggested Replacement
+----------------               ---------------------
+sun.misc.BASE64Decoder         Use java.util.Base64 @since 1.8
+sun.misc.BASE64Encoder         Use java.util.Base64 @since 1.8
+sun.misc.Unsafe                See http://openjdk.java.net/jeps/260
+sun.security.x509.X500Name     Use javax.security.auth.x500.X500Principal @since 1.4
+----
+
+* `sun.misc.BASE64Decoder, `sun.misc.BASE64Encoder`: :(  -> in our own source code
+* `sun.misc.Unsafe`: maybe OK
+* `sun.security.x509`, `sun.security.util`: :(  -> not great for HTTPS
+
+== running ExampleApp with JDK 9
+
+Run the `build.sh`.
+It compile the source code with JDK 8 (should work) and run with JDK 9 (should fail).
+
+Our goal in this part is to make our app work with JDK 9. We will add the right options to achieve it.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/java -cp target:deps/*   \
+                        io.snowcamp.papaya.web.ExampleApp
+----
+
+=== Diagnostic #1
+
+[source]
+----
+Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException
+	at ...
+----
+
+When loading the XML configuration, we are using JAX-B which is not among the default root modules.
+
+=== Solution #1
+
+Add explicitly JAX-B on runtime
+
+[source]
+----
+/usr/jdk/jdk-9/bin/java --add-modules java.xml.bind ...
+----
+
+=== Diagnostic #2
+
+[source]
+----
+Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
+	at ...
+----
+
+=== Solution #2
+
+The real error is not visible :(
+
+Hopefully, there is a flag to ask to print every module access violations : `-Dsun.reflect.debugModuleAccessChecks=true`.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/java -Dsun.reflect.debugModuleAccessChecks=true ...
+----
+
+=== Diagnostic #3
+
+[source]
+----
+java.lang.reflect.InaccessibleObjectException: Unable to make field long java.nio.Buffer.address accessible: module java.base does not "opens java.nio" to unnamed module @58a90037
+	at ...
+----
+
+Thats's a better error message !
+
+In the static initializer of PlatformDependent0, the exception is raised because the code tries to access a field of java.nui.Buffer which is not in an open package.
+(see https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68)
+
+=== Solution #3
+
+Use the `add-opens` option.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/java --add-opens java.base/java.nio=ALL-UNNAMED ...
+----
+
+=== Diagnostic #4
+
+[source]
+----
+java.lang.reflect.InaccessibleObjectException: Unable to make field protected java.util.Set sun.nio.ch.SelectorImpl.selectedKeys accessible: module java.base does not "opens sun.nio.ch" to unnamed module @588df31b
+	at ...
+----
+
+Same problem as the previous one, with an other package.
+
+=== Solution #4
+
+Same solution as the previous one, with an other package.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/java --add-opens java.base/sun.nio.ch=ALL-UNNAMED ...
+----
+
+=== Diagnostic #5
+
+[source]
+----
+java.lang.IllegalAccessException: class io.netty.resolver.dns.DnsServerAddresses cannot access class sun.net.dns.ResolverConfiguration (in module java.base) because module java.base does not export sun.net.dns to unnamed module @588df31b
+	at ...
+----
+
+In the static initializer of io.netty.resolver.dns.DnsServerAddresses,
+it tries to load the class sun.net.dns.ResolverConfiguration which is in a non-exported package.
+(see https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49)
+
+=== Solution #4
+
+Use the `add-exports` option.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/java --add-exports java.base/sun.net.dns=ALL-UNNAMED ...
+----
+
+Yeah, it works.
+You should be able the access the service at http://localhost:8080/all.
