@@ -75,22 +75,38 @@ when switching to jdk9:
      ...
      
    SOLUTION:
-     dependencies are now explicit, so we need to add requires org.json and jdk.unsupported
-     i.e. in the module-info.java
+     dependencies are now explicit, so we need to add requires org.json, jdk.unsupported, java.xml.bind
+     and the dependencies of vertx: vertx.core, vertx.web and vertx.internal
+       
+     so the module-info.java should be
      module papaya {
-       requires json;                  // automatic module
        requires jdk.unsupported;
+       requires java.xml.bind;
+       
+       requires json;                // automatic module
+       
+       requires vertx.core;          // automatic module
+       requires vertx.web;           // automatic module
+       requires vertx.internal;      // automatic module
      }
      
      target/main/exploded contains the compiled sources
      target/main/artifacts contains the modular jar
+     
+     You can note that even if there is no direct dependency on vertx.internal, because automatic modules
+     have no dependency, vertx.internal has to be required too.
      
   - by default, packages are not visible from outside the module.
     We need to export them
     module papaya {
        requires json;                  
        requires jdk.unsupported;
-       
+       requires java.xml.bind;
+  
+       requires vertx.core;
+       requires vertx.web;
+       requires vertx.internal;
+
        exports io.snowcamp.papaya.api;
        exports io.snowcamp.papaya.doc;
        exports io.snowcamp.papaya.spi;
