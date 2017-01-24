@@ -59,7 +59,10 @@ when switching to jdk9:
           module papaya {
           }
        3) do the same things with the test
-       4) use pro as build tool and pro.json as build script
+       4) use pro as build tool
+          First, we need to generate a build script (build.json)
+          $ pro scaffold
+          then we can run the build tool
           $ pro
     
    ERROR:
