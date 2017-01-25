@@ -188,11 +188,13 @@ when switching to jdk9:
                        |              |
                        ----------------
                        |
-                   papaya.doc
-                       |
-                    java.base
+       papaya.web  papaya.doc
+            |          |
+            ------------
+                 |           
+             java.base
      
-     So we can split in 3 modules, 
+     So we can split in 4 modules, 
      papaya
          module-info
          io.snowcamp.papaya.spi 
@@ -204,6 +206,9 @@ when switching to jdk9:
      papaya.doc
          module-info
          io.snowcamp.papaya.doc
+     papaya.web
+         module-info
+         io.snowcamp.papaya.web
              
      1. creates a new directory in src/main/java named papaya.doc        
      2. move the package io.snowcamp.papaya.doc into papaya.doc
