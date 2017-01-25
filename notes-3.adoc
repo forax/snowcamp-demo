@@ -1,0 +1,55 @@
+= Services
+
+If we take a look to the relation between the api and inmemory packages, api is an abstract API and inmemory is its implementation.
+In term of implementation, we may want to provide another implementation so bundling pi and inmemory together is not a good idea.
+
+The platform module API provides the feature of service/service provider help to separate the two packages.
+
+1. creates a new directory in src/main/java named papaya.inmemory
+2. move the package io.snowcamp.papaya.inmemory into papaya.inmemory
+3. create a new module-info.java
+[source,java]
+----
+module papaya.inmemory {
+    requires json;
+    requires papaya;
+    requires papaya.doc;
+    requires papaya.reflect;
+
+    provides io.snowcamp.papaya.api.DBFactory
+        with io.snowcamp.papaya.inmemory.InMemoryDBFactory;
+}
+----
+[start=4]
+4. modify the module-info of papaya
+[source,java]
+----
+module papaya {
+    ...
+    uses io.snowcamp.papaya.api.DBFactory;
+}
+----
+
+Once again, some script to help prepare the new structure :
+
+[source]
+----
+mkdir -p src/main/java/papaya.inmemory/io/snowcamp/papaya
+mv src/main/java/papaya/io/snowcamp/papaya/inmemory src/main/java/papaya.inmemory/io/snowcamp/papaya/
+touch src/main/java/papaya.inmemory/module-info.java
+----
+
+Now, modify io.snowcamp.papaya.spi.StandardKind to use a java.util.ServiceLoader.
+(comment 'return new InMemoryDBFactory();' and uncomment the next 3 lines)
+
+Also do not forget that papaya.reflect now needs to be exported to papaya.inmemory.
+
+[source,java]
+----
+module papaya.reflect {
+    requires jdk.unsupported;
+    requires papaya.doc;
+
+    exports io.snowcamp.papaya.reflect to papaya.inmemory;
+}
+----

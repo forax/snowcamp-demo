@@ -1,3 +1,363 @@
-== Make the application modular again
+= Modules
 
-TBD
+In this part, we'll *compile* and *run* the application and test with JDK 9.
+
+== List dependencies
+
+Before switching to JDK 9, we'll be back with jdeps in order to list the dependencies.
+
+[source]
+----
+/usr/jdk/jdk-9/bin/jdeps target/ > dependencies.txt
+----
+
+We'll have a look at it later.
+
+== Compile with JDK 9
+
+In build.sh switch the compiler to JDK 9.
+
+[source]
+----
+export javac=$JAVA9_HOME/bin/javac
+----
+
+=== Diagnostic
+
+A lot of errors when we try to compile with JDK 9.
+
+=== Solution
+
+We could workaround them with the same options as the run (--add-modules, --add-exports), but our goal is to build a modular application.
+
+[source]
+----
+$javac --add-modules java.xml.bind ...
+----
+
+OK, it's not the actual solution. Just a workaround.
+
+== What do we want? Modules!
+
+Let's make a big monolythic module, and fix our errors with *module-info*.
+
+* create a module-info.java file inside src/main/java
+* add the following content
+
+[source,java]
+----
+module papaya {
+}
+----
+
+Now, you can change the -classpath option with a --module-path.
+
+[source]
+----
+$javac --module-path deps \
+       -d target/ \
+       $(find src/main/java/ -name "*.java")
+----
+
+=== Diagnostic #1
+
+Now we're ready to declare the missing dependencies. In the dependencies.txt file, the target column shows which module should be declared as a dependency.
+
+* *java.base* can be ignored, it's an implicit dependency
+* *"not found"* can be solved by putting the jar file in the classpath
+* "JDK removed internal API" implies changes in the source code
+* other dependencies can be fixed in module-info.java
+
+Let's add the missing dependencies in the module-info.java.
+
+=== Solution #1
+
+In src/main/java/ :
+
+[source,java]
+----
+module papaya {
+    // JDK modules
+    requires jdk.unsupported;
+    requires java.xml.bind;
+}
+----
+
+=== Diagnostic #2
+
+That's not enough.
+
+[source]
+----
+src/main/java/io/snowcamp/papaya/inmemory/InMemoryDBFactory.java:3: error: package org.json does not exist
+----
+
+Package org.json is in a "not found" dependencies.
+
+=== Solution #2
+
+As the json-20160810.jar file is in the module path, it can be required as an _automatic module_.
+
+Same case for the vert.x modules.
+
+[source,java]
+----
+module papaya {
+    ...
+    // automatic modules
+    requires json;
+    requires vertx.core;
+    requires vertx.web;
+}
+----
+
+That's fine for the src/main/java/ directory. Not for the tests.
+
+Change the classpath to a module-path in build.sh, and create a module-info.java in src/test/java.
+
+[source,java]
+----
+module papaya {
+}
+----
+
+=== Diagnostic #3
+
+[source]
+----
+src/test/java/io/snowcamp/papaya/test/DBObjectAPI.java:3: error: package org.junit does not exist
+----
+
+=== Solution #3
+
+Automatic module FTW.
+
+[source,java]
+----
+module papaya {
+    // automatic modules
+    requires junit;
+}
+----
+
+Nice. It compiles.
+
+== pro
+
+Our build script has done a great job, so far.
+But we'll need a better tool, that fits more with the modules.
+Maven, Gradle, Ant,... ? No. Pro.
+
+...
+
+We'll test it in our single module.
+First we'll move it into its own directory :
+
+[source]
+----
+mkdir src/main/java/papaya
+mv src/main/java/* src/main/java/papaya/
+mkdir src/main/resources/papaya
+mv src/main/resources/* src/main/resources/papaya/
+mkdir src/test/java/papaya
+mv src/test/java/* src/test/java/papaya/
+----
+
+And build it with pro :
+
+[source]
+----
+$PRO_HOME/bin/pro
+----
+
+Now we can run the tests in the module-path way :
+
+[source]
+----
+$java --module-path target/test/artifact:deps  \
+      -m papaya/io.snowcamp.papaya.test.Run
+----
+
+=== Diagnostic #1
+
+There's a new problem :
+
+[source]
+----
+Exception in thread "main" java.lang.NoClassDefFoundError: org/hamcrest/SelfDescribing
+	at ...
+	at junit@4.12/org.junit.runner.Computer.getSuite(Computer.java:28)
+	at ...
+----
+
+JUnit requires Hamcrest, but has no module-info to declare it.
+
+=== Solution #1
+
+Automatic modules describe a flat hierarchy, we do not know that junit requires hamcrest-core.
+We just have to put its jar file in the classpath.
+
+[source]
+----
+$java --module-path target/test/artifact:deps  \
+      -classpath deps/hamcrest-core-1.3.jar    \
+      -m papaya/io.snowcamp.papaya.test.Run
+----
+
+=== Diagnostic #2
+
+Next problem :
+
+[source]
+----
+1) testInMemoryDBfindAllAppend(io.snowcamp.papaya.test.DBDocumentAPI)
+java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner (in module junit) cannot access class io.snowcamp.papaya.test.DBDocumentAPI (in module papaya) because module papaya does not export io.snowcamp.papaya.test to module junit
+----
+
+Obviously, if the JUnit tests has to be visible from the JUnit test runner, so the test must be declared in an exported package
+
+=== Solution #2
+
+In the module-info of the test, we need to export io.snowcamp.papaya.test
+
+[source,java]
+----
+module papaya {
+  requires junit;
+
+  exports io.snowcamp.papaya.test;
+}
+----
+
+New achievement!
+
+== Modular modules
+
+Now we can split the monolyth in micro-modules (micro-services is so 2016).
+
+Here is a dependency diagram of the packages :
+
+----
+                                  papaya.spi
+                                      |
+                       ----------------
+                       |              |
+                       |        papaya.inmemory
+                       |              |
+                       ----------------
+                       |              |
+                   papaya.api    papaya.reflect
+                       |              |
+                       ----------------
+                       |
+                   papaya.doc
+----
+
+So we can split in 3 modules,
+
+* papaya
+** io.snowcamp.papaya.spi
+** io.snowcamp.papaya.inmemory
+** io.snowcamp.papaya.api
+* papaya.reflect
+** io.snowcamp.papaya.reflect
+* papaya.doc
+** io.snowcamp.papaya.doc
+
+// ^
+
+. create a new directory in src/main/java named papaya.doc
+. move the package io.snowcamp.papaya.doc into papaya.doc
+. create a new module-info.java
+[source,java]
+----
+module papaya.doc {
+    exports io.snowcamp.papaya.doc;
+}
+----
+[start=4]
+. creates a new directory in src/main/java named papaya.reflect
+. move the package io.snowcamp.papaya.reflect into papaya.reflect
+. create a new module-info.java
+[source,java]
+----
+module papaya.reflect {
+    requires jdk.unsupported;
+    requires papaya.doc;
+
+    exports io.snowcamp.papaya.reflect;
+}
+----
+[start=7]
+. change src/main/java/papaya/module-info.java to be
+[source,java]
+----
+module papaya {
+    ...
+    requires papaya.doc;
+    requires papaya.reflect;
+
+    exports io.snowcamp.papaya.spi;
+    exports io.snowcamp.papaya.api;
+    // io.snowcamp.papaya.inmemory is not exported
+}
+----
+
+This script may help to prepare the new structure :
+
+[source]
+----
+mkdir -p src/main/java/papaya.doc/io/snowcamp/papaya
+mv src/main/java/papaya/io/snowcamp/papaya/doc src/main/java/papaya.doc/io/snowcamp/papaya/
+touch src/main/java/papaya.doc/module-info.java
+
+mkdir -p src/main/java/papaya.reflect/io/snowcamp/papaya
+mv src/main/java/papaya/io/snowcamp/papaya/reflect src/main/java/papaya.reflect/io/snowcamp/papaya/
+touch src/main/java/papaya.reflect/module-info.java
+----
+
+=== Diagnostic #1
+
+[source]
+----
+Error occurred during initialization of VM
+java.lang.module.ResolutionException: Module papaya.doc not found, required by papaya
+	at ...
+----
+
+=== Solution #1
+
+Before running, the VM checks that all modules are available, here papaya.doc is not available.
+The module path target/main/artifact has to be added *after* target/test/artifact.
+
+[source]
+----
+$java --module-path target/test/artifact:target/main/artifact:deps  \
+      -classpath deps/hamcrest-core-1.3.jar                         \
+      -m papaya/io.snowcamp.papaya.test.Run
+----
+
+=== Diagnostic #2
+
+[source]
+----
+1) testInMemoryDBPair(io.snowcamp.papaya.test.DBObjectAPI)
+java.lang.reflect.InaccessibleObjectException: Unable to make field private java.lang.String io.snowcamp.papaya.test.DBObjectAPI$Pair.first accessible: module papaya does not "opens io.snowcamp.papaya.test" to module papaya.reflect
+	at ...
+----
+
+Now the tests and io.snowcamp.papaya.reflect.ReflectionSupport are not in the same module anymore and the test testInMemoryDBPair ask ReflectionSupport to use reflection on its *private* fields.
+
+=== Solution #2
+
+Here the best is to open the whole test module, so all tests will be able to test the reflection.
+
+[source,java]
+----
+open module papaya {
+    requires junit;
+
+    exports io.snowcamp.papaya.test;
+}
+----
+
