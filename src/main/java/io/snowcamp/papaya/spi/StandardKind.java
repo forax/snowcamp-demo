@@ -17,9 +17,9 @@ public enum StandardKind implements DBKind {
   }),
   FILE(() -> { throw new UnsupportedOperationException(); });
   
-  private final Supplier<DBFactory> supplier;
+  private final Supplier<? extends DBFactory> supplier;
   
-  private StandardKind(Supplier<DBFactory> supplier) {
+  private StandardKind(Supplier<? extends DBFactory> supplier) {
     this.supplier = supplier;
   }
 
