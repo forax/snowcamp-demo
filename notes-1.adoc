@@ -140,7 +140,7 @@ Use the `add-exports` option.
 $java --add-exports java.base/sun.net.dns=ALL-UNNAMED ...
 ----
 
-Yeah, it works.
+Yeah, it works. (or maybe one more similar problem with jdk.internal.ref)
 You should be able the access the service at http://localhost:8080/all.
 
 == Testing the API with JDK 9
