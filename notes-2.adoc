@@ -163,6 +163,18 @@ mkdir src/test/java/papaya
 mv src/test/java/* src/test/java/papaya/
 ----
 
+or 
+
+[source]
+----
+robocopy src\main\java\io src\main\java\papaya\io /s /Move /NFL /NDL /NJH /NJS
+move src\main\java\module-info.java src\main\java\papaya\
+robocopy src\main\resources\io src\main\resources\papaya\io /s /Move /NFL /NDL /NJH /NJS
+robocopy src\test\java\io src\test\java\papaya\io /s /Move /NFL /NDL /NJH /NJS
+move src\test\java\module-info.java src\test\java\papaya\
+----
+
+
 And build it with pro :
 
 [source]
@@ -314,6 +326,17 @@ touch src/main/java/papaya.doc/module-info.java
 mkdir -p src/main/java/papaya.reflect/io/snowcamp/papaya
 mv src/main/java/papaya/io/snowcamp/papaya/reflect src/main/java/papaya.reflect/io/snowcamp/papaya/
 touch src/main/java/papaya.reflect/module-info.java
+----
+
+or
+
+[source]
+----
+robocopy src\main\java\papaya\io\snowcamp\papaya\doc src\main\java\papaya.doc\io\snowcamp\papaya\doc /s /Move /NFL /NDL /NJH /NJS
+copy NUL src\main\java\papaya.doc\module-info.java
+
+robocopy src\main\java\papaya\io\snowcamp\papaya\reflect src\main\java\papaya.reflect\io\snowcamp\papaya\reflect /s /Move /NFL /NDL /NJH /NJS
+copy NUL src\main\java\papaya.reflect\module-info.java
 ----
 
 === Diagnostic #1
