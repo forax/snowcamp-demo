@@ -174,7 +174,7 @@ Now we can run the tests in the module-path way :
 
 [source]
 ----
-$java --module-path target/test/artifact:deps  \
+$java --module-path target/test/artifact:target/main/artifact:deps  \
       -m papaya/io.snowcamp.papaya.test.Run
 ----
 
@@ -199,7 +199,7 @@ We just have to put its jar file in the classpath.
 
 [source]
 ----
-$java --module-path target/test/artifact:deps  \
+$java --module-path target/test/artifact:target/main/artifact:deps  \
       -classpath deps/hamcrest-core-1.3.jar    \
       -m papaya/io.snowcamp.papaya.test.Run
 ----
@@ -320,27 +320,6 @@ touch src/main/java/papaya.reflect/module-info.java
 
 [source]
 ----
-Error occurred during initialization of VM
-java.lang.module.ResolutionException: Module papaya.doc not found, required by papaya
-	at ...
-----
-
-=== Solution #1
-
-Before running, the VM checks that all modules are available, here papaya.doc is not available.
-The module path target/main/artifact has to be added *after* target/test/artifact.
-
-[source]
-----
-$java --module-path target/test/artifact:target/main/artifact:deps  \
-      -classpath deps/hamcrest-core-1.3.jar                         \
-      -m papaya/io.snowcamp.papaya.test.Run
-----
-
-=== Diagnostic #2
-
-[source]
-----
 1) testInMemoryDBPair(io.snowcamp.papaya.test.DBObjectAPI)
 java.lang.reflect.InaccessibleObjectException: Unable to make field private java.lang.String io.snowcamp.papaya.test.DBObjectAPI$Pair.first accessible: module papaya does not "opens io.snowcamp.papaya.test" to module papaya.reflect
 	at ...
@@ -348,9 +327,9 @@ java.lang.reflect.InaccessibleObjectException: Unable to make field private java
 
 Now the tests and io.snowcamp.papaya.reflect.ReflectionSupport are not in the same module anymore and the test testInMemoryDBPair ask ReflectionSupport to use reflection on its *private* fields.
 
-=== Solution #2
+=== Solution #1
 
-Here the best is to open the whole test module, so all tests will be able to test the reflection.
+Here the best is to open the whole test module, so all tests will be able to use the reflection.
 
 [source,java]
 ----
@@ -360,4 +339,3 @@ open module papaya {
     exports io.snowcamp.papaya.test;
 }
 ----
-
