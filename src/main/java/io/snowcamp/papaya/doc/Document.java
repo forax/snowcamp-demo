@@ -39,4 +39,13 @@ public interface Document extends Map<String, Object> {
       }
     });
   }
+  
+  /*
+  default void putBlob(String key, byte[] blob) {
+    put(key, new String(Base64.getEncoder().encode(blob), StandardCharsets.ISO_8859_1));
+  }
+  default Optional<byte[]> getBlob(String key) {
+    return get(key, String.class).map(base64 -> Base64.getDecoder().decode(base64));
+  }
+  */
 }
