@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5">
+<title>From Java 8 to Jigsaw</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+*:not(pre)>code.nobreak{word-wrap:normal}
+*:not(pre)>code.nowrap{white-space:nowrap}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>From Java 8 to Jigsaw</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_classpath_mode">Classpath mode</a>
+<ul class="sectlevel2">
+<li><a href="#_using_jdeps">Using jdeps</a></li>
+<li><a href="#_running_exampleapp_with_jdk_9">Running ExampleApp with JDK 9</a></li>
+<li><a href="#_testing_the_api_with_jdk_9">Testing the API with JDK 9</a></li>
+</ul>
+</li>
+<li><a href="#_modules">Modules</a>
+<ul class="sectlevel2">
+<li><a href="#_list_dependencies">List dependencies</a></li>
+<li><a href="#_compile_with_jdk_9">Compile with JDK 9</a></li>
+<li><a href="#_what_do_we_want_modules">What do we want? Modules!</a></li>
+<li><a href="#_pro">pro</a></li>
+<li><a href="#_modular_modules">Modular modules</a></li>
+</ul>
+</li>
+<li><a href="#_services">Services</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_classpath_mode">Classpath mode</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Running a Java 8 application with JDK 9</p>
+</div>
+<div class="sect2">
+<h3 id="_using_jdeps">Using jdeps</h3>
+<div class="paragraph">
+<p><strong>jdeps</strong> will report usage of non standard API.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>"c:\Program Files\Java\jdk-9\bin\jdeps" --jdk-internals target deps/vertx-*.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Diagnostic</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>JDK Internal API               Suggested Replacement
+----------------               ---------------------
+sun.misc.BASE64Decoder         Use java.util.Base64 @since 1.8
+sun.misc.BASE64Encoder         Use java.util.Base64 @since 1.8
+sun.misc.Unsafe                See http://openjdk.java.net/jeps/260
+sun.security.x509.X500Name     Use javax.security.auth.x500.X500Principal @since 1.4</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>sun.misc.BASE64Decoder, `sun.misc.BASE64Encoder</code>: :(  &#8594; in our own source code</p>
+</li>
+<li>
+<p><code>sun.misc.Unsafe</code>: maybe OK</p>
+</li>
+<li>
+<p><code>sun.security.x509</code>, <code>sun.security.util</code>: :(  &#8594; not great for HTTPS</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_exampleapp_with_jdk_9">Running ExampleApp with JDK 9</h3>
+<div class="paragraph">
+<p>Run the <code>build.sh</code>.
+It compile the source code with JDK 8 (should work) and run with JDK 9 (should fail).</p>
+</div>
+<div class="paragraph">
+<p>Our goal in this part is to make our app work with JDK 9. We will add the right options to achieve it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% -cp target;deps\*   \
+       io.snowcamp.papaya.web.ExampleApp</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_1">Diagnostic #1</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When loading the XML configuration, we are using JAX-B which is not among the default root modules.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_1">Solution #1</h4>
+<div class="paragraph">
+<p>Add explicitly JAX-B on runtime</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --add-modules java.xml.bind ...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_2">Diagnostic #2</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
+	at ...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_2">Solution #2</h4>
+<div class="paragraph">
+<p>The real error is not visible :(</p>
+</div>
+<div class="paragraph">
+<p>Hopefully, there is a flag to ask to print every module access violations : <code>-Dsun.reflect.debugModuleAccessChecks=true</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% -Dsun.reflect.debugModuleAccessChecks=true ...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_3">Diagnostic #3</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>java.lang.reflect.InaccessibleObjectException: Unable to make field long java.nio.Buffer.address accessible: module java.base does not "opens java.nio" to unnamed module @58a90037
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Thats&#8217;s a better error message !</p>
+</div>
+<div class="paragraph">
+<p>In the static initializer of PlatformDependent0, the exception is raised because the code tries to access a field of java.nui.Buffer which is not in an open package.
+(see <a href="https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68" class="bare">https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68</a>)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_3">Solution #3</h4>
+<div class="paragraph">
+<p>Use the <code>add-opens</code> option.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --add-opens java.base/java.nio=ALL-UNNAMED ...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_4">Diagnostic #4</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>java.lang.reflect.InaccessibleObjectException: Unable to make field protected java.util.Set sun.nio.ch.SelectorImpl.selectedKeys accessible: module java.base does not "opens sun.nio.ch" to unnamed module @588df31b
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Same problem as the previous one, with an other package.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_4">Solution #4</h4>
+<div class="paragraph">
+<p>Same solution as the previous one, with an other package.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --add-opens java.base/sun.nio.ch=ALL-UNNAMED ...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_5">Diagnostic #5</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>java.lang.IllegalAccessException: class io.netty.resolver.dns.DnsServerAddresses cannot access class sun.net.dns.ResolverConfiguration (in module java.base) because module java.base does not export sun.net.dns to unnamed module @588df31b
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the static initializer of io.netty.resolver.dns.DnsServerAddresses,
+it tries to load the class sun.net.dns.ResolverConfiguration which is in a non-exported package.
+(see <a href="https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49" class="bare">https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49</a>)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_4_2">Solution #4</h4>
+<div class="paragraph">
+<p>Use the <code>add-exports</code> option.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --add-exports java.base/sun.net.dns=ALL-UNNAMED ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Yeah, it works. (or maybe one more similar problem with jdk.internal.ref)
+You should be able the access the service at <a href="http://localhost:8080/all" class="bare">http://localhost:8080/all</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_testing_the_api_with_jdk_9">Testing the API with JDK 9</h3>
+<div class="paragraph">
+<p>In the build script, comment out the run command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>rem %java% -classpath target;deps/vertx-core-3.3.3.jar;deps/vertx-web-3.3.3.jar;deps/vertx-internal-3.3.3.jar \
+rem        ...
+rem        io.snowcamp.papaya.web.ExampleApp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and uncomment the test command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% -classpath target;deps/json-20160810.jar;deps/junit-4.12.jar;deps/hamcrest-core-1.3.jar \
+       org.junit.runner.JUnitCore io.snowcamp.papaya.test.TestSuite</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic">Diagnostic</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>java.lang.NoClassDefFoundError: sun/misc/BASE64Encoder
+	at io.snowcamp.papaya.doc.Document.putBlob(Document.java:31)
+	at io.snowcamp.papaya.test.DocumentTest.blob1(DocumentTest.java:20)
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The sun.misc.BASE64Encoder and sun.misc.BASE64Decoder do not exist anymore, they&#8217;re in the "JDK removed internal API". jdeps provides some further information :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>"c:\Program Files\Java\jdk-9\bin\jdeps" --jdk-internals target/</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution">Solution</h4>
+<div class="paragraph">
+<p>In the <code>io.snowcamp.papaya.doc.Document</code> class,  Replace usages of <code>sun.misc.BASE64Decoder</code> by <code>java.util.Base64.Decoder</code> and <code>sun.misc.BASE64Encoder</code> by <code>java.util.Base64.Encoder</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>default void putBlob(String key, byte[] blob) {
+  put(key, new String(Base64.getEncoder().encode(blob), StandardCharsets.ISO_8859_1));
+}
+default Optional&lt;byte[]&gt; getBlob(String key) {
+  return get(key, String.class).map(base64 -&gt; Base64.getDecoder().decode(base64));
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modules">Modules</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this part, we&#8217;ll <strong>compile</strong> and <strong>run</strong> the application and test with JDK 9.</p>
+</div>
+<div class="sect2">
+<h3 id="_list_dependencies">List dependencies</h3>
+<div class="paragraph">
+<p>Before switching to JDK 9, we&#8217;ll be back with jdeps in order to list the dependencies.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>"c:\Program Files\Java\jdk-9\bin\jdeps" target &gt; dependencies.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll have a look at it later.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compile_with_jdk_9">Compile with JDK 9</h3>
+<div class="paragraph">
+<p>In build.sh switch the compiler to JDK 9.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>set javac=%JAVA9_HOME%\bin\javac</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_6">Diagnostic</h4>
+<div class="paragraph">
+<p>A lot of errors when we try to compile with JDK 9.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_5">Solution</h4>
+<div class="paragraph">
+<p>We could workaround them with the same options as the run (--add-modules, --add-exports), but our goal is to build a modular application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%javac% --add-modules java.xml.bind ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>OK, it&#8217;s not the actual solution. Just a workaround.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_do_we_want_modules">What do we want? Modules!</h3>
+<div class="paragraph">
+<p>Let&#8217;s make a big monolythic module, and fix our errors with <strong>module-info</strong>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create a module-info.java file inside src/main/java</p>
+</li>
+<li>
+<p>add the following content</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, you can change the -classpath option with a --module-path.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$javac --module-path deps \
+       -d target/         \
+       $(find src/main/java/ -name "*.java")</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%javac% --module-path deps ^
+        -d target/         ^
+        $(find src/main/java/ -name "*.java")</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_1_2">Diagnostic #1</h4>
+<div class="paragraph">
+<p>Now we&#8217;re ready to declare the missing dependencies. In the dependencies.txt file, the target column shows which module should be declared as a dependency.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>java.base</strong> can be ignored, it&#8217;s an implicit dependency</p>
+</li>
+<li>
+<p><strong>"not found"</strong> can be solved by putting the jar file in the classpath</p>
+</li>
+<li>
+<p>"JDK removed internal API" implies changes in the source code</p>
+</li>
+<li>
+<p>other dependencies can be fixed in module-info.java</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add the missing dependencies in the module-info.java.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_1_2">Solution #1</h4>
+<div class="paragraph">
+<p>In src/main/java/ :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya {
+    // JDK modules
+    requires jdk.unsupported;
+    requires java.xml.bind;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_2_2">Diagnostic #2</h4>
+<div class="paragraph">
+<p>That&#8217;s not enough.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>src/main/java/io/snowcamp/papaya/inmemory/InMemoryDBFactory.java:3: error: package org.json does not exist</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Package org.json is in a "not found" dependencies.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_2_2">Solution #2</h4>
+<div class="paragraph">
+<p>As the json-20160810.jar file is in the module path, it can be required as an <em>automatic module</em>.</p>
+</div>
+<div class="paragraph">
+<p>Same case for the vert.x modules.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya {
+    ...
+    // automatic modules
+    requires json;
+    requires vertx.core;
+    requires vertx.web;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s fine for the src/main/java/ directory. Not for the tests.</p>
+</div>
+<div class="paragraph">
+<p>Change the classpath to a module-path in build.sh, and create a module-info.java in src/test/java.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya {
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_3_2">Diagnostic #3</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>src/test/java/io/snowcamp/papaya/test/DBObjectAPI.java:3: error: package org.junit does not exist</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_3_2">Solution #3</h4>
+<div class="paragraph">
+<p>Automatic module FTW.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya {
+    // automatic modules
+    requires junit;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Nice. It compiles.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pro">pro</h3>
+<div class="paragraph">
+<p>Our build script has done a great job, so far.
+But we&#8217;ll need a better tool, that fits more with the modules.
+Maven, Gradle, Ant,&#8230;&#8203; ? No. Pro.</p>
+</div>
+<div class="paragraph">
+<p>&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll test it in our single module.
+First we&#8217;ll move it into its own directory :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>robocopy src\main\java\io src\main\java\papaya\io /s /Move /NFL /NDL /NJH /NJS
+move src\main\java\module-info.java src\main\java\papaya\
+robocopy src\main\resources\io src\main\resources\papaya\io /s /Move /NFL /NDL /NJH /NJS
+robocopy src\test\java\io src\test\java\papaya\io /s /Move /NFL /NDL /NJH /NJS
+move src\test\java\module-info.java src\test\java\papaya\</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And build it with pro :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$PRO_HOME/bin/pro</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can run the tests in the module-path way :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --module-path target/test/artifact:deps  ^
+       -m papaya/io.snowcamp.papaya.test.Run</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_1_3">Diagnostic #1</h4>
+<div class="paragraph">
+<p>There&#8217;s a new problem :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Exception in thread "main" java.lang.NoClassDefFoundError: org/hamcrest/SelfDescribing
+	at ...
+	at junit@4.12/org.junit.runner.Computer.getSuite(Computer.java:28)
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>JUnit requires Hamcrest, but has no module-info to declare it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_1_3">Solution #1</h4>
+<div class="paragraph">
+<p>Automatic modules describe a flat hierarchy, we do not know that junit requires hamcrest-core.
+We just have to put its jar file in the classpath.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --module-path target/test/artifact:deps  ^
+       -classpath deps/hamcrest-core-1.3.jar    ^
+       -m papaya/io.snowcamp.papaya.test.Run</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_2_3">Diagnostic #2</h4>
+<div class="paragraph">
+<p>Next problem :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>1) testInMemoryDBfindAllAppend(io.snowcamp.papaya.test.DBDocumentAPI)
+java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner (in module junit) cannot access class io.snowcamp.papaya.test.DBDocumentAPI (in module papaya) because module papaya does not export io.snowcamp.papaya.test to module junit</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Obviously, if the JUnit tests has to be visible from the JUnit test runner, so the test must be declared in an exported package</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_2_3">Solution #2</h4>
+<div class="paragraph">
+<p>In the module-info of the test, we need to export io.snowcamp.papaya.test</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya {
+  requires junit;
+
+  exports io.snowcamp.papaya.test;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>New achievement!</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_modular_modules">Modular modules</h3>
+<div class="paragraph">
+<p>Now we can split the monolyth in micro-modules (micro-services is so 2016).</p>
+</div>
+<div class="paragraph">
+<p>Here is a dependency diagram of the packages :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>                                  papaya.spi
+                                      |
+                       ----------------
+                       |              |
+                       |        papaya.inmemory
+                       |              |
+                       ----------------
+                       |              |
+                   papaya.api    papaya.reflect
+                       |              |
+                       ----------------
+                       |
+                   papaya.doc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So we can split in 3 modules,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>papaya</p>
+<div class="ulist">
+<ul>
+<li>
+<p>io.snowcamp.papaya.spi</p>
+</li>
+<li>
+<p>io.snowcamp.papaya.inmemory</p>
+</li>
+<li>
+<p>io.snowcamp.papaya.api</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>papaya.reflect</p>
+<div class="ulist">
+<ul>
+<li>
+<p>io.snowcamp.papaya.reflect</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>papaya.doc</p>
+<div class="ulist">
+<ul>
+<li>
+<p>io.snowcamp.papaya.doc</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>create a new directory in src/main/java named papaya.doc</p>
+</li>
+<li>
+<p>move the package io.snowcamp.papaya.doc into papaya.doc</p>
+</li>
+<li>
+<p>create a new module-info.java</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>module papaya.doc {
+    exports io.snowcamp.papaya.doc;
+}</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>creates a new directory in src/main/java named papaya.reflect</p>
+</li>
+<li>
+<p>move the package io.snowcamp.papaya.reflect into papaya.reflect</p>
+</li>
+<li>
+<p>create a new module-info.java</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>module papaya.reflect {
+    requires jdk.unsupported;
+    requires papaya.doc;
+
+    exports io.snowcamp.papaya.reflect;
+}</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>change src/main/java/papaya/module-info.java to be</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>module papaya {
+    ...
+    requires papaya.doc;
+    requires papaya.reflect;
+
+    exports io.snowcamp.papaya.spi;
+    exports io.snowcamp.papaya.api;
+    // io.snowcamp.papaya.inmemory is not exported
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This script may help to prepare the new structure :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>robocopy src\main\java\papaya\io\snowcamp\papaya\doc src\main\java\papaya.doc\io\snowcamp\papaya\doc /s /Move /NFL /NDL /NJH /NJS
+copy NUL src\main\java\papaya.doc\module-info.java
+
+robocopy src\main\java\papaya\io\snowcamp\papaya\reflect src\main\java\papaya.reflect\io\snowcamp\papaya\reflect /s /Move /NFL /NDL /NJH /NJS
+copy NUL src\main\java\papaya.reflect\module-info.java</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_1_4">Solution #1</h4>
+<div class="paragraph">
+<p>Before running, the VM checks that all modules are available, here papaya.doc is not available.
+The module path target/main/artifact has to be added <strong>after</strong> target/test/artifact.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>%java% --module-path target/test/artifact;target/main/artifact;deps  ^
+       -classpath deps/hamcrest-core-1.3.jar                         ^
+       -m papaya/io.snowcamp.papaya.test.Run</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_diagnostic_1_4">Diagnostic #1</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>1) testInMemoryDBPair(io.snowcamp.papaya.test.DBObjectAPI)
+java.lang.reflect.InaccessibleObjectException: Unable to make field private java.lang.String io.snowcamp.papaya.test.DBObjectAPI$Pair.first accessible: module papaya does not "opens io.snowcamp.papaya.test" to module papaya.reflect
+	at ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now the tests and io.snowcamp.papaya.reflect.ReflectionSupport are not in the same module anymore and the test testInMemoryDBPair ask ReflectionSupport to use reflection on its <strong>private</strong> fields.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_solution_1_5">Solution #1</h4>
+<div class="paragraph">
+<p>Here the best is to open the whole test module, so all tests will be able to use the reflection.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">open module papaya {
+    requires junit;
+
+    exports io.snowcamp.papaya.test;
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_services">Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If we take a look to the relation between the api and inmemory packages, api is an abstract API and inmemory is its implementation.
+In term of implementation, we may want to provide another implementation so bundling pi and inmemory together is not a good idea.</p>
+</div>
+<div class="paragraph">
+<p>The platform module API provides the feature of service/service provider help to separate the two packages.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>creates a new directory in src/main/java named papaya.inmemory</p>
+</li>
+<li>
+<p>move the package io.snowcamp.papaya.inmemory into papaya.inmemory</p>
+</li>
+<li>
+<p>create a new module-info.java</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>module papaya.inmemory {
+    requires json;
+    requires papaya;
+    requires papaya.doc;
+    requires papaya.reflect;
+
+    provides io.snowcamp.papaya.api.DBFactory
+        with io.snowcamp.papaya.inmemory.InMemoryDBFactory;
+}</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>modify the module-info of papaya</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>module papaya {
+    ...
+    uses io.snowcamp.papaya.api.DBFactory;
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once again, some script to help prepare the new structure :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>robocopy src\main\java\papaya\io\snowcamp\papaya\inmemory src\main\java\papaya.inmemory\io\snowcamp\papaya\inmemory /s /Move /NFL /NDL /NJH /NJS
+copy NUL src\main\java\papaya.inmemory\module-info.java</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, modify io.snowcamp.papaya.spi.StandardKind to use a java.util.ServiceLoader.
+(comment 'return new InMemoryDBFactory();' and uncomment the next 3 lines)</p>
+</div>
+<div class="paragraph">
+<p>Also do not forget that papaya.reflect now needs to be exported to papaya.inmemory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">module papaya.reflect {
+    requires jdk.unsupported;
+    requires papaya.doc;
+
+    exports io.snowcamp.papaya.reflect to papaya.inmemory;
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-01-30 22:15:26 CET
+</div>
+</div>
+</body>
+</html>

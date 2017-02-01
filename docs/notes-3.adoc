@@ -5,9 +5,9 @@ In term of implementation, we may want to provide another implementation so bund
 
 The platform module API provides the feature of service/service provider help to separate the two packages.
 
-1. creates a new directory in src/main/java named papaya.inmemory
-2. move the package io.snowcamp.papaya.inmemory into papaya.inmemory
-3. create a new module-info.java
+. creates a new directory in src/main/java named papaya.inmemory
+. move the package io.snowcamp.papaya.inmemory into papaya.inmemory
+. create a new module-info.java
 [source,java]
 ----
 module papaya.inmemory {
@@ -21,7 +21,7 @@ module papaya.inmemory {
 }
 ----
 [start=4]
-4. modify the module-info of papaya
+. modify the module-info of papaya
 [source,java]
 ----
 module papaya {
@@ -32,12 +32,21 @@ module papaya {
 
 Once again, some script to help prepare the new structure :
 
+ifeval::["{os}" != "win"]
 [source]
 ----
 mkdir -p src/main/java/papaya.inmemory/io/snowcamp/papaya
 mv src/main/java/papaya/io/snowcamp/papaya/inmemory src/main/java/papaya.inmemory/io/snowcamp/papaya/
 touch src/main/java/papaya.inmemory/module-info.java
 ----
+endif::[]
+ifeval::["{os}" == "win"]
+[source]
+----
+robocopy src\main\java\papaya\io\snowcamp\papaya\inmemory src\main\java\papaya.inmemory\io\snowcamp\papaya\inmemory /s /Move /NFL /NDL /NJH /NJS
+copy NUL src\main\java\papaya.inmemory\module-info.java
+----
+endif::[]
 
 Now, modify io.snowcamp.papaya.spi.StandardKind to use a java.util.ServiceLoader.
 (comment 'return new InMemoryDBFactory();' and uncomment the next 3 lines)
