@@ -1,6 +1,7 @@
 = From Java 8 to Jigsaw
 :toc:
 :toclevels: 2
+:imagesdir: img
 :scripting: bash
 :os: tux
 

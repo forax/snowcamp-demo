@@ -31,13 +31,20 @@ sun.misc.Unsafe                See http://openjdk.java.net/jeps/260
 sun.security.x509.X500Name     Use javax.security.auth.x500.X500Principal @since 1.4
 ----
 
-* `sun.misc.BASE64Decoder, `sun.misc.BASE64Encoder`: :(  -> in our own source code
+* `sun.misc.BASE64Decoder`, `sun.misc.BASE64Encoder` :(  -> in our own source code
 * `sun.misc.Unsafe`: maybe OK
 * `sun.security.x509`, `sun.security.util`: :(  -> not great for HTTPS
 
 == Running ExampleApp with JDK 9
 
-Run the `build.sh`.
+Run the
+ifeval::["{os}" != "win"]
+`build.sh`
+endif::[]
+ifeval::["{os}" == "win"]
+`build.bat`
+endif::[]
+script.
 It compile the source code with JDK 8 (should work) and run with JDK 9 (should fail).
 
 Our goal in this part is to make our app work with JDK 9. We will add the right options to achieve it.
@@ -45,14 +52,14 @@ Our goal in this part is to make our app work with JDK 9. We will add the right 
 ifeval::["{os}" != "win"]
 [source]
 ----
-$java -cp target:deps/*   \
+$java -cp target:deps/*        \
       io.snowcamp.papaya.web.ExampleApp
 ----
 endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-%java% -cp target;deps\*   \
+%java% -cp target;deps\*       ^
        io.snowcamp.papaya.web.ExampleApp
 ----
 endif::[]
@@ -62,7 +69,7 @@ endif::[]
 [source]
 ----
 Exception in thread "main" java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException
-	at ...
+    at ...
 ----
 
 When loading the XML configuration, we are using JAX-B which is not among the default root modules.
@@ -88,15 +95,16 @@ endif::[]
 
 [source]
 ----
-Exception in thread "main" java.lang.NoClassDefFoundError: Could not initialize class io.netty.util.internal.PlatformDependent0
-	at ...
+Exception in thread "main" java.lang.NoClassDefFoundError:
+        Could not initialize class io.netty.util.internal.PlatformDependent0
+    at ...
 ----
 
 === Solution #2
 
 The real error is not visible :(
 
-Hopefully, there is a flag to ask to print every module access violations : `-Dsun.reflect.debugModuleAccessChecks=true`.
+Hopefully, there is a flag to ask to print every module access violations : `-Dsun.reflect.debugModuleAccessChecks`.
 
 ifeval::["{os}" != "win"]
 [source]
@@ -115,8 +123,10 @@ endif::[]
 
 [source]
 ----
-java.lang.reflect.InaccessibleObjectException: Unable to make field long java.nio.Buffer.address accessible: module java.base does not "opens java.nio" to unnamed module @58a90037
-	at ...
+java.lang.reflect.InaccessibleObjectException: Unable to make field long
+        java.nio.Buffer.address accessible: module java.base does not
+        "opens java.nio" to unnamed module @58a90037
+    at ...
 ----
 
 Thats's a better error message !
@@ -145,8 +155,10 @@ endif::[]
 
 [source]
 ----
-java.lang.reflect.InaccessibleObjectException: Unable to make field protected java.util.Set sun.nio.ch.SelectorImpl.selectedKeys accessible: module java.base does not "opens sun.nio.ch" to unnamed module @588df31b
-	at ...
+java.lang.reflect.InaccessibleObjectException: Unable to make field protected java.util.Set
+        sun.nio.ch.SelectorImpl.selectedKeys accessible: module java.base does not
+        "opens sun.nio.ch" to unnamed module @588df31b
+    at ...
 ----
 
 Same problem as the previous one, with an other package.
@@ -168,13 +180,14 @@ ifeval::["{os}" == "win"]
 ----
 endif::[]
 
-
 === Diagnostic #5
 
 [source]
 ----
-java.lang.IllegalAccessException: class io.netty.resolver.dns.DnsServerAddresses cannot access class sun.net.dns.ResolverConfiguration (in module java.base) because module java.base does not export sun.net.dns to unnamed module @588df31b
-	at ...
+java.lang.IllegalAccessException: class io.netty.resolver.dns.DnsServerAddresses cannot
+        access class sun.net.dns.ResolverConfiguration (in module java.base) because module
+        java.base does not export sun.net.dns to unnamed module @588df31b
+    at ...
 ----
 
 In the static initializer of io.netty.resolver.dns.DnsServerAddresses,
@@ -208,7 +221,7 @@ In the build script, comment out the run command
 ifeval::["{os}" != "win"]
 [source]
 ----
-#$java -classpath target:deps/vertx-core-3.3.3.jar:deps/vertx-web-3.3.3.jar:deps/vertx-internal-3.3.3.jar \
+#$java -classpath target:deps/vertx-core.jar:...     \
 #      ...
 #      io.snowcamp.papaya.web.ExampleApp
 ----
@@ -216,7 +229,7 @@ endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-rem %java% -classpath target;deps/vertx-core-3.3.3.jar;deps/vertx-web-3.3.3.jar;deps/vertx-internal-3.3.3.jar \
+rem %java% -classpath target;deps/vertx-core.jar;... ^
 rem        ...
 rem        io.snowcamp.papaya.web.ExampleApp
 ----
@@ -227,14 +240,14 @@ and uncomment the test command
 ifeval::["{os}" != "win"]
 [source]
 ----
-$java -classpath target:deps/json-20160810.jar:deps/junit-4.12.jar:deps/hamcrest-core-1.3.jar \
+$java -classpath target:deps/json.jar:deps/junit.jar:deps/hamcrest-core.jar \
       org.junit.runner.JUnitCore io.snowcamp.papaya.test.TestSuite
 ----
 endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-%java% -classpath target;deps/json-20160810.jar;deps/junit-4.12.jar;deps/hamcrest-core-1.3.jar \
+%java% -classpath target;deps/json-20160810.jar;deps/junit.jar;deps/hamcrest-core.jar ^
        org.junit.runner.JUnitCore io.snowcamp.papaya.test.TestSuite
 ----
 endif::[]
@@ -267,7 +280,7 @@ endif::[]
 
 === Solution
 
-In the `io.snowcamp.papaya.doc.Document` class,  Replace usages of `sun.misc.BASE64Decoder` by `java.util.Base64.Decoder` and `sun.misc.BASE64Encoder` by `java.util.Base64.Encoder`.
+In the `io.snowcamp.papaya.doc.Document` class, replace usages of `sun.misc.BASE64Decoder` by `java.util.Base64.Decoder` and `sun.misc.BASE64Encoder` by `java.util.Base64.Encoder`.
 
 [source]
 ----
