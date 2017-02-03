@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-asciidoctor notes.adoc -a os=tux -o notes-linux.html
-asciidoctor notes.adoc -a os=win -o notes-windows.html
+docs_home=$(dirname $0)
+asciidoctor $docs_home/notes.adoc -r asciidoctor-diagram -a os=tux -o $docs_home/notes-linux.html
+asciidoctor $docs_home/notes.adoc -r asciidoctor-diagram -a os=win -o $docs_home/notes-windows.html

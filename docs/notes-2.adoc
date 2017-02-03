@@ -19,7 +19,6 @@ ifeval::["{os}" == "win"]
 ----
 endif::[]
 
-
 We'll have a look at it later.
 
 == Compile with JDK 9
@@ -77,7 +76,7 @@ module papaya {
 
 Now, you can change the -classpath option with a --module-path.
 
-ifeval::["{os}" == "win"]
+ifeval::["{os}" != "win"]
 [source]
 ----
 $javac --module-path deps \
@@ -177,13 +176,14 @@ module papaya {
 
 Nice. It compiles.
 
-== pro
+== Build with pro
 
 Our build script has done a great job, so far.
 But we'll need a better tool, that fits more with the modules.
 Maven, Gradle, Ant,... ? No. Pro.
 
-...
+Pro is a brand new build tool that fits to the module world of Java 9.
+If you want to learn more on pro, see https://github.com/forax/pro.
 
 We'll test it in our single module.
 First we'll move it into its own directory :
@@ -202,28 +202,28 @@ endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-...
-----
-endif::[]
-
-or 
-
-[source]
-----
 robocopy src\main\java\io src\main\java\papaya\io /s /Move /NFL /NDL /NJH /NJS
 move src\main\java\module-info.java src\main\java\papaya\
 robocopy src\main\resources\io src\main\resources\papaya\io /s /Move /NFL /NDL /NJH /NJS
 robocopy src\test\java\io src\test\java\papaya\io /s /Move /NFL /NDL /NJH /NJS
 move src\test\java\module-info.java src\test\java\papaya\
 ----
-
+endif::[]
 
 And build it with pro :
 
+ifeval::["{os}" != "win"]
 [source]
 ----
 $PRO_HOME/bin/pro
 ----
+endif::[]
+ifeval::["{os}" == "win"]
+[source]
+----
+%PRO_HOME%\bin\pro.bat
+----
+endif::[]
 
 Now we can run the tests in the module-path way :
 
@@ -249,9 +249,9 @@ There's a new problem :
 [source]
 ----
 Exception in thread "main" java.lang.NoClassDefFoundError: org/hamcrest/SelfDescribing
-	at ...
-	at junit@4.12/org.junit.runner.Computer.getSuite(Computer.java:28)
-	at ...
+    at ...
+    at junit@4.12/org.junit.runner.Computer.getSuite(Computer.java:28)
+    at ...
 ----
 
 JUnit requires Hamcrest, but has no module-info to declare it.
@@ -265,7 +265,7 @@ ifeval::["{os}" != "win"]
 [source]
 ----
 $java --module-path target/test/artifact:target/main/artifact:deps  \
-      -classpath deps/hamcrest-core-1.3.jar    \
+      -classpath deps/hamcrest-core.jar    \
       -m papaya/io.snowcamp.papaya.test.Run
 ----
 endif::[]
@@ -273,7 +273,7 @@ ifeval::["{os}" == "win"]
 [source]
 ----
 %java% --module-path target/test/artifact:deps  ^
-       -classpath deps/hamcrest-core-1.3.jar    ^
+       -classpath deps/hamcrest-core.jar    ^
        -m papaya/io.snowcamp.papaya.test.Run
 ----
 endif::[]
@@ -311,34 +311,76 @@ Now we can split the monolyth in micro-modules (micro-services is so 2016).
 
 Here is a dependency diagram of the packages :
 
-----
-                                  papaya.spi
-                                      |
-                       ----------------
-                       |              |
-                       |        papaya.inmemory
-                       |              |
-                       ----------------
-                       |              |
-                   papaya.api    papaya.reflect
-                       |              |
-                       ----------------
-                       |
-                   papaya.doc
-----
+[ditaa,"package-dependency"]
+....
+                    /--------------------------------\
+                    |cFC3                            |
+                    |     io.snowcamp.papaya.spi     |
+                    |                                |
+                    \--------------+-----------------/
+                                   |
+              +--------------------+
+              |                    |
+              |                    v
+              | /------------------+------------------\
+              | |cFC3                                 |
+              | |     io.snowcamp.papaya.inmemory     |
+              | |                                     |
+              | \------------------+------------------/
+              |                    |
+              +--------------------+--------------------+
+              |                                         |
+              v                                         v
+/-------------+------------------\   /------------------+-----------------\
+|cFC3                            |   |cF93                                |
+|    io.snowcamp.papaya.api      |   |     io.snowcamp.papaya.reflect     |
+|                                |   |                                    |
+\-------------+------------------/   \------------------+-----------------/
+              |                                         |
+              +--------------------+--------------------+
+                                   |
+                                   v
+                   /---------------+---------------\
+                   |cF66                           |
+                   |    io.snowcamp.papaya.doc     |
+                   |                               |
+                   \-------------------------------/
+....
 
-So we can split in 3 modules,
+So we can split in 3 modules:
 
-* papaya
-** io.snowcamp.papaya.spi
-** io.snowcamp.papaya.inmemory
-** io.snowcamp.papaya.api
-* papaya.reflect
-** io.snowcamp.papaya.reflect
-* papaya.doc
-** io.snowcamp.papaya.doc
-
-// ^
+[ditaa,"module-dependency"]
+....
+/-----------------------------\
+|cFC3       papaya            |
++-----------------------------+
+|cFC3                         |
+| io.snowcamp.papaya.spi      |
+| io.snowcamp.papaya.inmemory |
+| io.snowcamp.papaya.api      |
+|                             |
+\--------------+--------------/
+               |
+               |
+               v
+/--------------+--------------\
+|cF93   papaya.reflect        |
++-----------------------------+
+|cF93                         |
+| io.snowcamp.papaya.reflect  |
+|                             |
+\--------------+--------------/
+               |
+               |
+               v
+/--------------+--------------\
+|cF66     papaya.doc          |
++-----------------------------+
+|cF66                         |
+| io.snowcamp.papaya.doc      |
+|                             |
+\-----------------------------/
+....
 
 . create a new directory in src/main/java named papaya.doc
 . move the package io.snowcamp.papaya.doc into papaya.doc
@@ -394,10 +436,14 @@ endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-robocopy src\main\java\papaya\io\snowcamp\papaya\doc src\main\java\papaya.doc\io\snowcamp\papaya\doc /s /Move /NFL /NDL /NJH /NJS
+robocopy src\main\java\papaya\io\snowcamp\papaya\doc     ^
+         src\main\java\papaya.doc\io\snowcamp\papaya\doc ^
+         /s /Move /NFL /NDL /NJH /NJS
 copy NUL src\main\java\papaya.doc\module-info.java
 
-robocopy src\main\java\papaya\io\snowcamp\papaya\reflect src\main\java\papaya.reflect\io\snowcamp\papaya\reflect /s /Move /NFL /NDL /NJH /NJS
+robocopy src\main\java\papaya\io\snowcamp\papaya\reflect         ^
+         src\main\java\papaya.reflect\io\snowcamp\papaya\reflect ^
+         /s /Move /NFL /NDL /NJH /NJS
 copy NUL src\main\java\papaya.reflect\module-info.java
 ----
 endif::[]
@@ -411,15 +457,15 @@ ifeval::["{os}" != "win"]
 [source]
 ----
 $java --module-path target/test/artifact:target/main/artifact:deps  \
-      -classpath deps/hamcrest-core-1.3.jar                         \
+      -classpath deps/hamcrest-core.jar                             \
       -m papaya/io.snowcamp.papaya.test.Run
 ----
 endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-%java% --module-path target/test/artifact;target/main/artifact;deps  ^
-       -classpath deps/hamcrest-core-1.3.jar                         ^
+%java% --module-path target/test/artifact;target/main/artifact;deps ^
+       -classpath deps/hamcrest-core.jar                            ^
        -m papaya/io.snowcamp.papaya.test.Run
 ----
 endif::[]
@@ -430,7 +476,7 @@ endif::[]
 ----
 1) testInMemoryDBPair(io.snowcamp.papaya.test.DBObjectAPI)
 java.lang.reflect.InaccessibleObjectException: Unable to make field private java.lang.String io.snowcamp.papaya.test.DBObjectAPI$Pair.first accessible: module papaya does not "opens io.snowcamp.papaya.test" to module papaya.reflect
-	at ...
+    at ...
 ----
 
 Now the tests and io.snowcamp.papaya.reflect.ReflectionSupport are not in the same module anymore and the test testInMemoryDBPair ask ReflectionSupport to use reflection on its *private* fields.

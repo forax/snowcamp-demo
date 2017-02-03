@@ -4,3 +4,6 @@
 hs_err_pid*
 /bin/
 /target/
+
+# Asciidoctor cache
+.asciidoctor

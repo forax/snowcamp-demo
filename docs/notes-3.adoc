@@ -1,11 +1,56 @@
 = Services
 
 If we take a look to the relation between the api and inmemory packages, api is an abstract API and inmemory is its implementation.
-In term of implementation, we may want to provide another implementation so bundling pi and inmemory together is not a good idea.
+
+[plantuml,"service-dependency"]
+....
+skinparam class {
+	BackgroundColor #FC3
+	ArrowColor #333
+	BorderColor #333
+}
+
+together {
+    interface "api.DBFactory" as DBFactory #FC3
+    class "inmemory.InMemoryDBFactory" as InMemoryDBFactory #FC6
+}
+enum "spi.StandardKind" as StandardKind #FC3
+
+hide members
+InMemoryDBFactory -left-|> DBFactory
+StandardKind -up..> DBFactory
+StandardKind ..> InMemoryDBFactory #red
+....
+
+In term of implementation, we may want to provide another implementation so bundling api and inmemory together is not a good idea.
 
 The platform module API provides the feature of service/service provider help to separate the two packages.
 
-. creates a new directory in src/main/java named papaya.inmemory
+[ditaa,"module-service-dependency"]
+....
+/-----------------------------\   /--------------+--------------\
+|cFC3       papaya            |   |cFC6   papaya.inmemory       |
++-----------------------------+   +-----------------------------+
+|cFC3                         |   |cFC6                         |
+| io.snowcamp.papaya.spi      +<--+ io.snowcamp.papaya.inmemory |
+| io.snowcamp.papaya.api      |   |                             |
+|                             |   |                             |
+\--------------+--------------/   \--------------+--------------/
+               |                                 |
+               |                                 |
+               v                                 |
+/--------------+--------------\                  |
+|cF93   papaya.reflect        |<-----------------+
+\--------------+--------------/                  |
+               |                                 |
+               |                                 |
+               v                                 |
+/--------------+--------------\                  |
+|cF66     papaya.doc          |<-----------------+
+\-----------------------------/
+....
+
+. create a new directory in src/main/java named papaya.inmemory
 . move the package io.snowcamp.papaya.inmemory into papaya.inmemory
 . create a new module-info.java
 [source,java]
@@ -43,7 +88,9 @@ endif::[]
 ifeval::["{os}" == "win"]
 [source]
 ----
-robocopy src\main\java\papaya\io\snowcamp\papaya\inmemory src\main\java\papaya.inmemory\io\snowcamp\papaya\inmemory /s /Move /NFL /NDL /NJH /NJS
+robocopy src\main\java\papaya\io\snowcamp\papaya\inmemory          ^
+         src\main\java\papaya.inmemory\io\snowcamp\papaya\inmemory ^
+         /s /Move /NFL /NDL /NJH /NJS
 copy NUL src\main\java\papaya.inmemory\module-info.java
 ----
 endif::[]
