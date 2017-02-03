@@ -1,0 +1,123 @@
+= Images
+:imagesdir: img
+
+== .
+
+[ditaa,"package-dependency"]
+....
+                    /--------------------------------\
+                    |cFC3                            |
+                    |     io.snowcamp.papaya.spi     |
+                    |                                |
+                    \--------------+-----------------/
+                                   |
+              +--------------------+
+              |                    |
+              |                    v
+              | /------------------+------------------\
+              | |cFC3                                 |
+              | |     io.snowcamp.papaya.inmemory     |
+              | |                                     |
+              | \------------------+------------------/
+              |                    |
+              +--------------------+--------------------+
+              |                                         |
+              v                                         v
+/-------------+------------------\   /------------------+-----------------\
+|cFC3                            |   |cF93                                |
+|    io.snowcamp.papaya.api      |   |     io.snowcamp.papaya.reflect     |
+|                                |   |                                    |
+\-------------+------------------/   \------------------+-----------------/
+              |                                         |
+              +--------------------+--------------------+
+                                   |
+                                   v
+                   /---------------+---------------\
+                   |cF66                           |
+                   |    io.snowcamp.papaya.doc     |
+                   |                               |
+                   \-------------------------------/
+....
+
+== .
+
+[ditaa,"module-dependency"]
+....
+/-----------------------------\
+|cFC3       papaya            |
++-----------------------------+
+|cFC3                         |
+| io.snowcamp.papaya.spi      |
+| io.snowcamp.papaya.inmemory |
+| io.snowcamp.papaya.api      |
+|                             |
+\--------------+--------------/
+               |
+               |
+               v
+/--------------+--------------\
+|cF93   papaya.reflect        |
++-----------------------------+
+|cF93                         |
+| io.snowcamp.papaya.reflect  |
+|                             |
+\--------------+--------------/
+               |
+               |
+               v
+/--------------+--------------\
+|cF66     papaya.doc          |
++-----------------------------+
+|cF66                         |
+| io.snowcamp.papaya.doc      |
+|                             |
+\-----------------------------/
+....
+
+== .
+
+[plantuml,"service-dependency"]
+....
+skinparam class {
+	BackgroundColor #FC3
+	ArrowColor #333
+	BorderColor #333
+}
+
+together {
+    interface "api.DBFactory" as DBFactory #FC3
+    class "inmemory.InMemoryDBFactory" as InMemoryDBFactory #FC6
+}
+enum "spi.StandardKind" as StandardKind #FC3
+
+hide members
+InMemoryDBFactory -left-|> DBFactory
+StandardKind -up..> DBFactory
+StandardKind ..> InMemoryDBFactory #red
+....
+
+== .
+
+[ditaa,"module-service-dependency"]
+....
+/-----------------------------\   /--------------+--------------\
+|cFC3       papaya            |   |cFC6   papaya.inmemory       |
++-----------------------------+   +-----------------------------+
+|cFC3                         |   |cFC6                         |
+| io.snowcamp.papaya.spi      +<--+ io.snowcamp.papaya.inmemory |
+| io.snowcamp.papaya.api      |   |                             |
+|                             |   |                             |
+\--------------+--------------/   \--------------+--------------/
+               |                                 |
+               |                                 |
+               v                                 |
+/--------------+--------------\                  |
+|cF93   papaya.reflect        |<-----------------+
+\--------------+--------------/                  |
+               |                                 |
+               |                                 |
+               v                                 |
+/--------------+--------------\                  |
+|cF66     papaya.doc          |<-----------------+
+\-----------------------------/
+....
