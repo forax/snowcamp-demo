@@ -563,11 +563,10 @@ It compile the source code with JDK 8 (should work) and run with JDK 9 (should f
 </div>
 </div>
 <div class="paragraph">
-<p>Thats&#8217;s a better error message !</p>
+<p>That&#8217;s a better error message !</p>
 </div>
 <div class="paragraph">
-<p>In the static initializer of PlatformDependent0, the exception is raised because the code tries to access a field of java.nui.Buffer which is not in an open package.
-(see <a href="https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68" class="bare">https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68</a>)</p>
+<p>In the static initializer of PlatformDependent0, the exception is raised because the code tries to access a field of java.nui.Buffer which is not in an open package <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -618,8 +617,7 @@ It compile the source code with JDK 8 (should work) and run with JDK 9 (should f
 </div>
 <div class="paragraph">
 <p>In the static initializer of io.netty.resolver.dns.DnsServerAddresses,
-it tries to load the class sun.net.dns.ResolverConfiguration which is in a non-exported package.
-(see <a href="https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49" class="bare">https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49</a>)</p>
+it tries to load the class sun.net.dns.ResolverConfiguration which is in a non-exported package <sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1007,7 +1005,7 @@ java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/package-dependency.png" alt="package dependency" width="790" height="504">
+<img src="img/package-dependency.png" alt="package dependency">
 </div>
 </div>
 <div class="paragraph">
@@ -1015,7 +1013,7 @@ java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/module-dependency.png" alt="module dependency" width="350" height="462">
+<img src="img/module-dependency.png" alt="module dependency">
 </div>
 </div>
 <div class="olist arabic">
@@ -1150,7 +1148,7 @@ java.lang.reflect.InaccessibleObjectException: Unable to make field private java
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/service-dependency.png" alt="service dependency" width="422" height="236">
+<img src="img/service-dependency.png" alt="service dependency">
 </div>
 </div>
 <div class="paragraph">
@@ -1161,7 +1159,7 @@ java.lang.reflect.InaccessibleObjectException: Unable to make field private java
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/module-service-dependency.png" alt="module service dependency" width="690" height="336">
+<img src="img/module-service-dependency.png" alt="module service dependency">
 </div>
 </div>
 <div class="olist arabic">
@@ -1234,6 +1232,15 @@ copy NUL src\main\java\papaya.inmemory\module-info.java</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. <a href="https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68" class="bare">https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/common/src/main/java/io/netty/util/internal/PlatformDependent0.java#L68</a>
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. <a href="https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49" class="bare">https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49</a>
 </div>
 </div>
 <div id="footer">

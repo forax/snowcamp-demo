@@ -311,76 +311,11 @@ Now we can split the monolyth in micro-modules (micro-services is so 2016).
 
 Here is a dependency diagram of the packages :
 
-[ditaa,"package-dependency"]
-....
-                    /--------------------------------\
-                    |cFC3                            |
-                    |     io.snowcamp.papaya.spi     |
-                    |                                |
-                    \--------------+-----------------/
-                                   |
-              +--------------------+
-              |                    |
-              |                    v
-              | /------------------+------------------\
-              | |cFC3                                 |
-              | |     io.snowcamp.papaya.inmemory     |
-              | |                                     |
-              | \------------------+------------------/
-              |                    |
-              +--------------------+--------------------+
-              |                                         |
-              v                                         v
-/-------------+------------------\   /------------------+-----------------\
-|cFC3                            |   |cF93                                |
-|    io.snowcamp.papaya.api      |   |     io.snowcamp.papaya.reflect     |
-|                                |   |                                    |
-\-------------+------------------/   \------------------+-----------------/
-              |                                         |
-              +--------------------+--------------------+
-                                   |
-                                   v
-                   /---------------+---------------\
-                   |cF66                           |
-                   |    io.snowcamp.papaya.doc     |
-                   |                               |
-                   \-------------------------------/
-....
+image::package-dependency.png[]
 
 So we can split in 3 modules:
 
-[ditaa,"module-dependency"]
-....
-/-----------------------------\
-|cFC3       papaya            |
-+-----------------------------+
-|cFC3                         |
-| io.snowcamp.papaya.spi      |
-| io.snowcamp.papaya.inmemory |
-| io.snowcamp.papaya.api      |
-|                             |
-\--------------+--------------/
-               |
-               |
-               v
-/--------------+--------------\
-|cF93   papaya.reflect        |
-+-----------------------------+
-|cF93                         |
-| io.snowcamp.papaya.reflect  |
-|                             |
-\--------------+--------------/
-               |
-               |
-               v
-/--------------+--------------\
-|cF66     papaya.doc          |
-+-----------------------------+
-|cF66                         |
-| io.snowcamp.papaya.doc      |
-|                             |
-\-----------------------------/
-....
+image::module-dependency.png[]
 
 . create a new directory in src/main/java named papaya.doc
 . move the package io.snowcamp.papaya.doc into papaya.doc

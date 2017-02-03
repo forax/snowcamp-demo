@@ -1,0 +1,131 @@
+= Images
+:imagesdir: img
+
+== .
+
+[shaape,"package-dependency"]
+....
+                    +--------------------------------+
+                    |                                |
+                    |    'io.snowcamp.papaya.spi'    |
+                    |                                |
+                    +--------------+-----------------+
+                                   |
+              +--------------------+
+              |                    |
+              |                    v
+              | +------------------+------------------+
+              | |                                     |
+              | |    'io.snowcamp.papaya.inmemory'    |
+              | |                                     |
+              | +------------------+------------------+
+              |                    |
+              +--------------------+--------------------+
+              |                                         |
+              v                                         v
++-------------+------------------+   +------------------+-----------------+
+|                                |   |                                    |
+|   'io.snowcamp.papaya.api'     |   |    'io.snowcamp.papaya.reflect'    |
+|                                |   |                                    |
++-------------+------------------+   +------------------+-----------------+
+              |                                         |
+              +--------------------+--------------------+
+                                   |
+                                   v
+                   +---------------+---------------+
+                   |                               |
+                   |   'io.snowcamp.papaya.doc'    |
+                   |                               |
+                   +-------------------------------+
+
+options:
+- ".*": {fill: [no-shadow,2,[0,0.5,0.5]], frame: [2,[0.3,0.3,0.3]], text: ["Arial 12"]}
+- "io.snowcamp.papaya.*" : {fill: [[1,0.8,0.2]]}
+- "io.snowcamp.papaya.reflect" : {fill: [[1,0.6,0.2]]}
+- "io.snowcamp.papaya.doc" : {fill: [[1,0.4,0.4]]}
+....
+
+== .
+
+[shaape,"module-dependency"]
+....
++-----------------------------+
+|          'papaya'           |
++-----------------------------+
+|'io.snowcamp.papaya.spi'     |
+|'io.snowcamp.papaya.inmemory'|
+|'io.snowcamp.papaya.api'     |
++--------------+--------------+
+               |
+               |
+               v
++--------------+--------------+
+|      'papaya.reflect'       |
++-----------------------------+
+|'io.snowcamp.papaya.reflect' |
++--------------+--------------+
+               |
+               |
+               v
++--------------+--------------+
+|        'papaya.doc'         |
++-----------------------------+
+|'io.snowcamp.papaya.doc'     |
++-----------------------------+
+options:
+- ".*": {fill: [no-shadow,2,[0,0.2,0.6]], frame: [2,[0.3,0.3,0.3]], text: ["Arial 12"]}
+- ".*papaya.*" : {fill: [[1,0.8,0.2]]}
+- ".*papaya.reflect" : {fill: [[1,0.6,0.2]]}
+- ".*papaya.doc" : {fill: [[1,0.4,0.4]]}
+....
+
+== .
+
+[plantuml,"service-dependency"]
+....
+skinparam class {
+	BackgroundColor #FC3
+	ArrowColor #333
+	BorderColor #333
+}
+
+together {
+    interface "api.DBFactory" as DBFactory #FC3
+    class "inmemory.InMemoryDBFactory" as InMemoryDBFactory #FC6
+}
+enum "spi.StandardKind" as StandardKind #FC3
+
+hide members
+InMemoryDBFactory -left-|> DBFactory
+StandardKind -up..> DBFactory
+StandardKind ..> InMemoryDBFactory #red
+....
+
+== .
+
+[shaape,"module-service-dependency"]
+....
++-----------------------------+   +--------------+--------------+
+|          'papaya'           +<--+      'papaya.inmemory'      |
++-----------------------------+   +-----------------------------+
+|'io.snowcamp.papaya.spi'     |   |'io.snowcamp.papaya.inmemory'|
+|'io.snowcamp.papaya.api'     |   |                             |
++--------------+--------------+   +--------------+--------------+
+               |                                 |
+               |                                 |
+               v                                 |
++--------------+--------------+                  |
+|      'papaya.reflect'       |<-----------------+
++--------------+--------------+                  |
+               |                                 |
+               |                                 |
+               v                                 |
++--------------+--------------+                  |
+|        'papaya.doc'         |<-----------------+
++-----------------------------+
+options:
+- ".*": {fill: [no-shadow,2,[0,0.2,0.5]], frame: [2,[0.3,0.3,0.3]], text: ["Arial 12"]}
+- ".*papaya.*" : {fill: [[1,0.8,0.2]]}
+- ".*papaya.reflect" : {fill: [[1,0.6,0.2]]}
+- ".*papaya.doc" : {fill: [[1,0.4,0.4]]}
+....

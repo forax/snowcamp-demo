@@ -2,53 +2,13 @@
 
 If we take a look to the relation between the api and inmemory packages, api is an abstract API and inmemory is its implementation.
 
-[plantuml,"service-dependency"]
-....
-skinparam class {
-	BackgroundColor #FC3
-	ArrowColor #333
-	BorderColor #333
-}
-
-together {
-    interface "api.DBFactory" as DBFactory #FC3
-    class "inmemory.InMemoryDBFactory" as InMemoryDBFactory #FC6
-}
-enum "spi.StandardKind" as StandardKind #FC3
-
-hide members
-InMemoryDBFactory -left-|> DBFactory
-StandardKind -up..> DBFactory
-StandardKind ..> InMemoryDBFactory #red
-....
+image::service-dependency.png[]
 
 In term of implementation, we may want to provide another implementation so bundling api and inmemory together is not a good idea.
 
 The platform module API provides the feature of service/service provider help to separate the two packages.
 
-[ditaa,"module-service-dependency"]
-....
-/-----------------------------\   /--------------+--------------\
-|cFC3       papaya            |   |cFC6   papaya.inmemory       |
-+-----------------------------+   +-----------------------------+
-|cFC3                         |   |cFC6                         |
-| io.snowcamp.papaya.spi      +<--+ io.snowcamp.papaya.inmemory |
-| io.snowcamp.papaya.api      |   |                             |
-|                             |   |                             |
-\--------------+--------------/   \--------------+--------------/
-               |                                 |
-               |                                 |
-               v                                 |
-/--------------+--------------\                  |
-|cF93   papaya.reflect        |<-----------------+
-\--------------+--------------/                  |
-               |                                 |
-               |                                 |
-               v                                 |
-/--------------+--------------\                  |
-|cF66     papaya.doc          |<-----------------+
-\-----------------------------/
-....
+image::module-service-dependency.png[]
 
 . create a new directory in src/main/java named papaya.inmemory
 . move the package io.snowcamp.papaya.inmemory into papaya.inmemory
