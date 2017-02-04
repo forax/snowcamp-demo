@@ -63,7 +63,7 @@ OK, it's not the actual solution. Just a workaround.
 
 == What do we want? Modules!
 
-Let's make a big monolythic module, and fix our errors with *module-info*.
+Let's make a big monolithic module, and fix our errors with *module-info*.
 
 * create a module-info.java file inside src/main/java
 * add the following content
@@ -307,7 +307,7 @@ New achievement!
 
 == Modular modules
 
-Now we can split the monolyth in micro-modules (micro-services is so 2016).
+Now we can split the monolith in micro-modules (micro-services is so 2016).
 
 Here is a dependency diagram of the packages :
 
