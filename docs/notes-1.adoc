@@ -192,7 +192,7 @@ java.lang.IllegalAccessException: class io.netty.resolver.dns.DnsServerAddresses
 In the static initializer of io.netty.resolver.dns.DnsServerAddresses,
 it tries to load the class sun.net.dns.ResolverConfiguration which is in a non-exported package footnote:[https://github.com/netty/netty/blob/67d3a78123fa3faa85c1a150bd4ee69425079b3d/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java#L49].
 
-=== Solution #4
+=== Solution #5
 
 Use the `add-exports` option.
 
