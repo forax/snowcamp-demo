@@ -183,7 +183,7 @@ But we'll need a better tool, that fits more with the modules.
 Maven, Gradle, Ant,... ? No. Pro.
 
 Pro is a brand new build tool that fits to the module world of Java 9.
-If you want to learn more on pro, see https://github.com/forax/pro.
+If you want to learn more on pro, see [https://github.com/forax/pro](https://github.com/forax/pro).
 
 We'll test it in our single module.
 First we'll move it into its own directory :
