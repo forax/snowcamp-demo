@@ -4,6 +4,15 @@
 :imagesdir: img
 :scripting: bash
 :os: tux
+:build: build.sh
+:build-pro: build-pro.sh
+
+ifeval::["{os}" == "win"]
+:build: build.bat
+:build-pro: build-pro.bat
+endif::[]
+
+Build : {build}
 
 include::notes-1.adoc[leveloffset=+1]
 

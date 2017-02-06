@@ -445,11 +445,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Build : build.sh</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_classpath_mode">Classpath mode</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Running a Java 8 application with JDK 9</p>
+<p>The goal of this part is to run a Java 8 application with JDK 9.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ll keep compiling the application with a JDK 8, but we&#8217;ll <strong>run</strong> it with a recent build of JDK 9.</p>
+</div>
+<div class="paragraph">
+<p>The first step will be to launch the web ExampleApp, and call it from a browser or any other web client.
+The second step will be to run our JUnit TestSuite.</p>
 </div>
 <div class="sect2">
 <h3 id="_using_jdeps">Using jdeps</h3>
@@ -491,9 +505,7 @@ sun.security.x509.X500Name     Use javax.security.auth.x500.X500Principal @since
 <div class="sect2">
 <h3 id="_running_exampleapp_with_jdk_9">Running ExampleApp with JDK 9</h3>
 <div class="paragraph">
-<p>Run the
-<code>build.sh</code>
-script.
+<p>Run the <code>build.sh</code> script.
 It compile the source code with JDK 8 (should work) and run with JDK 9 (should fail).</p>
 </div>
 <div class="paragraph">
@@ -639,7 +651,7 @@ You should be able the access the service at <a href="http://localhost:8080/all"
 <div class="sect2">
 <h3 id="_testing_the_api_with_jdk_9">Testing the API with JDK 9</h3>
 <div class="paragraph">
-<p>In the build script, comment out the run command</p>
+<p>In the build.sh script, comment out the run command</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -668,7 +680,7 @@ You should be able the access the service at <a href="http://localhost:8080/all"
 </div>
 </div>
 <div class="paragraph">
-<p>The sun.misc.BASE64Encoder and sun.misc.BASE64Decoder do not exist anymore, they&#8217;re in the "JDK removed internal API". jdeps provides some further information :</p>
+<p>The <code>sun.misc.BASE64Encoder</code> and <code>sun.misc.BASE64Decoder</code> classes do not exist anymore, they&#8217;re in the "JDK removed internal API". jdeps provides some further information :</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -704,7 +716,7 @@ default Optional&lt;byte[]&gt; getBlob(String key) {
 <div class="sect2">
 <h3 id="_list_dependencies">List dependencies</h3>
 <div class="paragraph">
-<p>Before switching to JDK 9, we&#8217;ll be back with jdeps in order to list the dependencies.</p>
+<p>Before switching to JDK 9, we&#8217;ll get back to jdeps in order to list the dependencies.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -728,7 +740,7 @@ default Optional&lt;byte[]&gt; getBlob(String key) {
 <div class="sect3">
 <h4 id="_diagnostic_6">Diagnostic</h4>
 <div class="paragraph">
-<p>A lot of errors when we try to compile with JDK 9.</p>
+<p>There are a lot of errors when we try to compile with JDK 9.</p>
 </div>
 </div>
 <div class="sect3">
@@ -931,6 +943,9 @@ mv src/test/java/* src/test/java/papaya/</code></pre>
       -m papaya/io.snowcamp.papaya.test.Run</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>If you&#8217;re lazy, you may use the build-pro.sh script.</p>
+</div>
 <div class="sect3">
 <h4 id="_diagnostic_1_3">Diagnostic #1</h4>
 <div class="paragraph">
@@ -974,7 +989,7 @@ java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner
 </div>
 </div>
 <div class="paragraph">
-<p>Obviously, if the JUnit tests has to be visible from the JUnit test runner, so the test must be declared in an exported package</p>
+<p>Obviously, if the JUnit tests has to be visible from the JUnit test runner, so the test must be declared in an exported package.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1243,7 +1258,7 @@ touch src/main/java/papaya.inmemory/module-info.java</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-03 11:23:30 CET
+Last updated 2017-02-06 18:09:21 CET
 </div>
 </div>
 </body>

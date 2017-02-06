@@ -1,6 +1,11 @@
 = Classpath mode
 
-Running a Java 8 application with JDK 9
+The goal of this part is to run a Java 8 application with JDK 9.
+
+We'll keep compiling the application with a JDK 8, but we'll *run* it with a recent build of JDK 9.
+
+The first step will be to launch the web ExampleApp, and call it from a browser or any other web client.
+The second step will be to run our JUnit TestSuite.
 
 == Using jdeps
 
@@ -37,14 +42,7 @@ sun.security.x509.X500Name     Use javax.security.auth.x500.X500Principal @since
 
 == Running ExampleApp with JDK 9
 
-Run the
-ifeval::["{os}" != "win"]
-`build.sh`
-endif::[]
-ifeval::["{os}" == "win"]
-`build.bat`
-endif::[]
-script.
+Run the `{build}` script.
 It compile the source code with JDK 8 (should work) and run with JDK 9 (should fail).
 
 Our goal in this part is to make our app work with JDK 9. We will add the right options to achieve it.
@@ -214,7 +212,7 @@ You should be able the access the service at http://localhost:8080/all.
 
 == Testing the API with JDK 9
 
-In the build script, comment out the run command
+In the {build} script, comment out the run command
 
 ifeval::["{os}" != "win"]
 [source]
@@ -260,7 +258,7 @@ java.lang.NoClassDefFoundError: sun/misc/BASE64Encoder
 	at ...
 ----
 
-The sun.misc.BASE64Encoder and sun.misc.BASE64Decoder do not exist anymore, they're in the "JDK removed internal API". jdeps provides some further information :
+The `sun.misc.BASE64Encoder` and `sun.misc.BASE64Decoder` classes do not exist anymore, they're in the "JDK removed internal API". jdeps provides some further information :
 
 ifeval::["{os}" != "win"]
 [source]
