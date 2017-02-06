@@ -4,7 +4,7 @@ In this part, we'll *compile* and *run* the application and test with JDK 9.
 
 == List dependencies
 
-Before switching to JDK 9, we'll be back with jdeps in order to list the dependencies.
+Before switching to JDK 9, we'll get back to jdeps in order to list the dependencies.
 
 ifeval::["{os}" != "win"]
 [source]
@@ -21,9 +21,10 @@ endif::[]
 
 We'll have a look at it later.
 
+
 == Compile with JDK 9
 
-In build.sh switch the compiler to JDK 9.
+In {build} switch the compiler to JDK 9.
 
 ifeval::["{os}" != "win"]
 [source]
@@ -40,7 +41,7 @@ endif::[]
 
 === Diagnostic
 
-A lot of errors when we try to compile with JDK 9.
+There are a lot of errors when we try to compile with JDK 9.
 
 === Solution
 
@@ -89,7 +90,9 @@ ifeval::["{os}" == "win"]
 ----
 %javac% --module-path deps ^
         -d target/         ^
-        $(find src/main/java/ -name "*.java")
+        src\main\java\io\snowcamp\papaya\api\*.java ^
+        ...    ^
+        src\main\java\io\snowcamp\papaya\web\*.java
 ----
 endif::[]
 
@@ -147,7 +150,7 @@ module papaya {
 
 That's fine for the src/main/java/ directory. Not for the tests.
 
-Change the classpath to a module-path in build.sh, and create a module-info.java in src/test/java.
+Change the classpath to a module-path in {build}, and create a module-info.java in src/test/java.
 
 [source,java]
 ----
@@ -242,6 +245,8 @@ ifeval::["{os}" == "win"]
 ----
 endif::[]
 
+If you're lazy, you may use the {build-pro} script.
+
 === Diagnostic #1
 
 There's a new problem :
@@ -288,7 +293,7 @@ Next problem :
 java.lang.IllegalAccessException: class org.junit.runners.BlockJUnit4ClassRunner (in module junit) cannot access class io.snowcamp.papaya.test.DBDocumentAPI (in module papaya) because module papaya does not export io.snowcamp.papaya.test to module junit
 ----
 
-Obviously, if the JUnit tests has to be visible from the JUnit test runner, so the test must be declared in an exported package
+Obviously, if the JUnit tests has to be visible from the JUnit test runner, so the test must be declared in an exported package.
 
 === Solution #2
 
